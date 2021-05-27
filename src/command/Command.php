@@ -27,22 +27,14 @@ class Command
         $expenses = new Expense($request);
 
         switch ($this->command) {
-            case CommandPool::START:
-                return $this->getAllCommandDescriptions();
-            case CommandPool::MONTH_EXPENSES:
-                return $expenses->getMonthExpenses();
-            case CommandPool::DAY_EXPENSES:
-                return $expenses->getDayExpenses();
-            case CommandPool::PREVIOUS_MONTH_EXPENSES:
-                return $expenses->getPreviousMonthExpenses();
-            case CommandPool::DELETE_EXPENSE:
-                return $expenses->deleteExpense();
-            case CommandPool::MONTH_STATISTICS:
-                return $expenses->getMonthExpensesStatistics();
-            case CommandPool::PREVIOUS_MONTH_STATISTICS:
-                return $expenses->getPreviousMonthExpensesStatistics();
-            default:
-                return 'Такой команды не существует :(';
+            case CommandPool::START: return $this->getAllCommandDescriptions();
+            case CommandPool::DAY_EXPENSES: return $expenses->getDayExpenses();
+            case CommandPool::DELETE_EXPENSE: return $expenses->deleteExpense();
+            case CommandPool::MONTH_EXPENSES: return $expenses->getMonthExpenses(); 
+            case CommandPool::MONTH_STATISTICS: return $expenses->getMonthExpensesStatistics();
+            case CommandPool::PREVIOUS_MONTH_EXPENSES: return $expenses->getPreviousMonthExpenses();
+            case CommandPool::PREVIOUS_MONTH_STATISTICS:return $expenses->getPreviousMonthExpensesStatistics();
+            default: return 'Такой команды не существует :(';
         }
     }
 
