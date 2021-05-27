@@ -7,7 +7,6 @@ use App\Http\Request;
 use App\Helper\Helper;
 use App\Command\CommandPool;
 use App\Expense\Expense;
-use App\Http\Response;
 
 class Command
 {
@@ -43,7 +42,7 @@ class Command
             case CommandPool::PREVIOUS_MONTH_STATISTICS:
                 return $expenses->getPreviousMonthExpensesStatistics();
             default:
-                return 'Такой команды не существует!';
+                return 'Такой команды не существует :(';
         }
     }
 

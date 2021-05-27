@@ -6,6 +6,7 @@ namespace App\Http;
 use App\Config\BotConfig;
 use App\Expense\Expense;
 use App\Http\Request;
+use App\Database\Database;
 
 class Response
 {

@@ -12,7 +12,12 @@ class User
         $this->requestUserId = $requestUserId;
     }
 
-    public function createOrFind() : void
+    public function addUser() : void
+    {
+        //TODO добавление нового юзера
+    }
+
+    public function addUserExpense()
     {
         
     }
