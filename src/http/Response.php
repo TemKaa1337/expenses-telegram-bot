@@ -21,7 +21,7 @@ class Response
     public function handleRequest() : void
     {
         if ($this->request->isCommand) {
-            $response = $this->request->getCommand()->executeCommand($this->request, $this);
+            $response = $this->request->getCommand()->executeCommand($this->request);
         } else {
             $expense = new Expense($this->request);
             $expense->addExpense();
@@ -32,9 +32,10 @@ class Response
 
     public function sendResponse(array $data = [], string $method = 'sendMessage') : array
     {
+        $key = $this->config->getBotKey();
         $curl = curl_init(); 
           
-        curl_setopt($curl, CURLOPT_URL, "https://api.telegram.org/bot{$this->config->getBotKey()}/{$method}");
+        curl_setopt($curl, CURLOPT_URL, "https://api.telegram.org/bot{$key}/{$method}");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($curl, CURLOPT_POST, true);
