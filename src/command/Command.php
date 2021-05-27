@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Command;
 
-use App\Helper;
+use App\Helper\Helper;
 
 class Command
 {
@@ -21,7 +21,7 @@ class Command
 
     public function executeCommand() : void
     {
-        
+
     }
 }
 
