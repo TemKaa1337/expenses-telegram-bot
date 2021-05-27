@@ -3,8 +3,11 @@ declare(strict_types = 1);
 
 namespace App\Command;
 
+use App\Http\Request;
 use App\Helper\Helper;
 use App\Command\CommandPool;
+use App\Expense\Expense;
+use App\Http\Response;
 
 class Command
 {
@@ -20,24 +23,40 @@ class Command
         return Helper::str($this->command)->startsWith('/');
     }
 
-    public function executeCommand() : void
+    public function executeCommand(Request $request) : string
     {
+        $expenses = new Expense($request);
+
         switch ($this->command) {
             case CommandPool::START:
-                break;
+                return $this->getAllCommandDescriptions();
             case CommandPool::MONTH_EXPENSES:
-                break;
+                return $expenses->getMonthExpenses();
             case CommandPool::DAY_EXPENSES:
-                break;
+                return $expenses->getDayExpenses();
             case CommandPool::PREVIOUS_MONTH_EXPENSES:
-                break;
+                return $expenses->getPreviousMonthExpenses();
             case CommandPool::DELETE_EXPENSE:
-                break;
+                return $expenses->deleteExpense();
             case CommandPool::MONTH_STATISTICS:
-                break;
+                return $expenses->getMonthExpensesStatistics();
             case CommandPool::PREVIOUS_MONTH_STATISTICS:
-                break;
+                return $expenses->getPreviousMonthExpensesStatistics();
+            default:
+                return 'Такой команды не существует!';
         }
+    }
+
+    public function getAllCommandDescriptions() : string
+    {
+        $result = [];
+        $descriptions = CommandPool::COMMAND_DESCRIPTIONS;
+
+        foreach ($descriptions as $command => $description) {
+            $result[] = "{$command} - {$description}";
+        }
+
+        return implode('\n', $result);
     }
 }
 

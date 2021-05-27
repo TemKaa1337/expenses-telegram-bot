@@ -21,14 +21,16 @@ class Response
     public function handleRequest() : void
     {
         if ($this->request->isCommand) {
-            $this->request->getCommand()->executeCommand();
+            $response = $this->request->getCommand()->executeCommand($this->request, $this);
+        } else {
+            $expense = new Expense($this->request);
+            $expense->addExpense();
         }
 
-        $expense = new Expense($this->request);
-        $expense->addExpense();
+        $this->sendResponse($response);
     }
 
-    public function sendResponse(string $method, array $data = []) : array
+    public function sendResponse(array $data = [], string $method = 'sendMessage') : array
     {
         $curl = curl_init(); 
           

@@ -7,9 +7,12 @@ use App\Config\DatabaseConfig;
 
 class Database
 {
+    private $connection;
+
     public function __construct()
     {
         $config = new DatabaseConfig();
+        //TODO make and store database connection
     }
 }
 

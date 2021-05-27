@@ -14,10 +14,41 @@ class Expense
         $this->request = $request;
     }
 
-    public function addExpense() : void
+    public function addExpense() : string
+    {
+
+    }
+
+    public function getMonthExpenses() : string
+    {
+
+    }
+
+    public function getDayExpenses() : string
     {
         
     }
+
+    public function getPreviousMonthExpenses() : string
+    {
+        
+    }
+
+    public function deleteExpense() : string
+    {
+        
+    }
+
+    public function getMonthExpensesStatistics() : string
+    {
+        
+    }
+
+    public function getPreviousMonthExpensesStatistics() : string
+    {
+        
+    }
+
 }
 
 ?>
