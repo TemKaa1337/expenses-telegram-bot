@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Command;
 
 use App\Helper\Helper;
+use App\Command\CommandPool;
 
 class Command
 {
@@ -22,13 +23,19 @@ class Command
     public function executeCommand() : void
     {
         switch ($this->command) {
-            case '/start':
+            case CommandPool::START:
                 break;
-            case '/month':
+            case CommandPool::MONTH_EXPENSES:
                 break;
-            case '/day':
+            case CommandPool::DAY_EXPENSES:
                 break;
-            case '/prevmonth':
+            case CommandPool::PREVIOUS_MONTH_EXPENSES:
+                break;
+            case CommandPool::DELETE_EXPENSE:
+                break;
+            case CommandPool::MONTH_STATISTICS:
+                break;
+            case CommandPool::PREVIOUS_MONTH_STATISTICS:
                 break;
         }
     }
