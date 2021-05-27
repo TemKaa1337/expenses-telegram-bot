@@ -16,7 +16,7 @@ CREATE TABLE categories (
 
 CREATE TABLE categories_aliases (
     id SERIAL PRIMARY KEY,
-    category_name VARCHAR,
+    FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
     alias VARCHAR
 );
 

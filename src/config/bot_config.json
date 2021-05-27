@@ -1,5 +1,6 @@
 {
-    "username": "FinancialAccountingBot",
+    "name": "ExpensesControlBot",
     "webhook": "https://temkaatrashprojects.tech/hook.php",
-    "key": "1093982710:AAHGJk7hFt5O6FE2WNx2DVHLnlpC8E6HVeE"
+    "key": "1788917336:AAFUEmpfSglPPfgzcug8yPQIOIf2h0WUo6A",
+    "username": "control_expenses_bot"
 }

@@ -26,7 +26,7 @@ class Database
 
     public function execute(string $query = 'Select * FROM pg_database') : array
     {
-        // setFetchMode(PDO::FETCH_ASSOC)
+        // $res->setFetchMode(PDO::FETCH_ASSOC);
         return $this->connection->query($query)->fetchAll();
     }
 }
