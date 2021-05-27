@@ -21,7 +21,16 @@ class Command
 
     public function executeCommand() : void
     {
-
+        switch ($this->command) {
+            case '/start':
+                break;
+            case '/month':
+                break;
+            case '/day':
+                break;
+            case '/prevmonth':
+                break;
+        }
     }
 }
 

@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Config;
 
-class Config
+class BotConfig
 {
     private string $botKey;
     private string $botUsername;
@@ -11,24 +11,24 @@ class Config
 
     public function __construct()
     {
-        $botInfo = json_decode(file_get_contents('config.json'), true);
+        $botInfo = json_decode(file_get_contents('bot_config.json'), true);
 
         $this->botKey = $botInfo['key'];
         $this->botUsername = $botInfo['username'];
         $this->botWebhookUrl = $botInfo['webhook'];
     }
 
-    public function getKey() : string
+    public function getBotKey() : string
     {
         return $this->botKey;
     }
 
-    public function getUsername() : string
+    public function getBotUsername() : string
     {
         return $this->botUsername;
     }
 
-    public function getWebhookUrl() : string
+    public function getBotWebhookUrl() : string
     {
         return $this->botWebhookUrl;
     }
