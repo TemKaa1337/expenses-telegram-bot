@@ -2,17 +2,32 @@
 
 namespace App\Categories;
 
+use App\Database\Database;
+
 class Categories
 {
-    public function __construct(string $message)
+    private string $message;
+    private Database $db;
+
+    public function __construct(string $message, Database $db)
     {
         $this->message = $message;
+        $this->db = $db;
     }
 
-    public function getCategory() : string
+    public function getCategoryId() : int
     {
-        //TODO get category by message
-        return $this->message;
+        if (strpos($this->message, ' ') !== false) {
+            $category = explode(' ', $this->message)[1];
+            $query = 'SELECT category_id FROM category_aliases where alias = ?';
+
+            $result = $this->db->execute($query, [$category]);
+
+            if (!empty($result)) return $result['category_id'];
+            else return 'Другое';
+        }
+        
+        return 'Другое';
     }
 }
 

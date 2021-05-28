@@ -24,7 +24,7 @@ class Response
         if ($this->request->isCommand) {
             $response = $this->request->getCommand()->executeCommand($this->request);
         } else {
-            $expense = new Expense($this->request->getMessage(), $this->request->getUserId());
+            $expense = new Expense($this->request);
             $response = $expense->addExpense();
         }
 

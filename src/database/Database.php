@@ -24,10 +24,13 @@ class Database
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
-    public function execute(string $query = 'Select * FROM pg_database') : array
+    public function execute(string $query, array $data) : array
     {
-        // $res->setFetchMode(PDO::FETCH_ASSOC);
-        return $this->connection->query($query)->fetchAll();
+        $result = $this->connection->prepare($query, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $result->execute($data);
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+
+        return $result->fetchAll();
     }
 }
 

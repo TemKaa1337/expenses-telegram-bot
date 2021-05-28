@@ -9,16 +9,12 @@ class CommandPool
     const MONTH_EXPENSES = '/month_expenses';
     const DAY_EXPENSES = '/day_expenses';
     const PREVIOUS_MONTH_EXPENSES = '/previous_month_expenses';
-    const MONTH_STATISTICS = '/month_statistics';
-    const PREVIOUS_MONTH_STATISTICS = '/previous_month_statistics';
 
     const COMMAND_DESCRIPTIONS = [
-        self::START => '',
-        self::MONTH_EXPENSES => '',
-        self::DAY_EXPENSES => '',
-        self::PREVIOUS_MONTH_EXPENSES => '',
-        self::MONTH_STATISTICS => '',
-        self::PREVIOUS_MONTH_STATISTICS => ''
+        self::START => 'Это команда вам покажет весь доступный функционал.',
+        self::MONTH_EXPENSES => 'Это команда вам покажет ваши траты за текущий месяц',
+        self::DAY_EXPENSES => 'Это команда вам покажет ваши траты за текущий день',
+        self::PREVIOUS_MONTH_EXPENSES => 'Это команда вам покажет ваши траты за предыдущий месяц'
     ];
 }
 

@@ -12,7 +12,7 @@ CREATE TABLE categories (
     category_name VARCHAR UNIQUE
 );
 
-CREATE TABLE categories_aliases (
+CREATE TABLE category_aliases (
     id SERIAL PRIMARY KEY,
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
     alias VARCHAR
@@ -22,7 +22,8 @@ CREATE TABLE expenses (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMP,
     amount NUMERIC(6, 2),
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
 );
 
-INSERT INTO categories(category_name) values ('Еда'), ('Квартира'), ('Кафе'), ('Развлечения'), ('Еда'), ('Еда');
+INSERT INTO categories(category_name) values ('Еда'), ('Квартира'), ('Кафе'), ('Развлечения');

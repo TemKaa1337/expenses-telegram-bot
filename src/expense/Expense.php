@@ -7,53 +7,47 @@ use App\Categories\Categories;
 use App\Database\Database;
 use App\Http\Request;
 use App\Model\User;
+use Exception;
 
 class Expense
 {
     private User $user;
     private Database $db;
     private float $amount;
-    private string $category;
+    private int $categoryId;
 
-    public function __construct(string $message, int $requestUserId)
+    public function __construct(Request $request)
     {
-        $categories = new Categories($message);
-
         $this->db = new Database();
-        $this->user = new User($requestUserId, $this->db);
-        $this->category = $categories->getCategory();
-        $this->amount = $this->getAmount($message);
+        $categories = new Categories($request->getMessage(), $this->db);
+
+        $this->user = new User($request, false, $this->db);
+        $this->categoryId = $categories->getCategoryId();
+        $this->amount = $this->getAmount($request->getMessage());
     }
 
     public function addExpense() : string
     {
-        $this->user->addExpense($this->amount);
+        $this->user->addExpense($this->amount, $this->categoryId);
 
         return 'Новая трата добавлена успешно!';
     }
 
     public function getMonthExpenses() : string
     {
+        $expenses = $this->user->getMonthExpenses();
         return '';
     }
 
     public function getDayExpenses() : string
     {
+        $expenses = $this->user->getDayExpenses();
         return '';
     }
 
     public function getPreviousMonthExpenses() : string
     {
-        return '';
-    }
-
-    public function getMonthExpensesStatistics() : string
-    {
-        return ''; 
-    }
-
-    public function getPreviousMonthExpensesStatistics() : string
-    {
+        $expenses = $this->user->getPreviousMonthExpenses();
         return '';
     }
 
@@ -70,8 +64,8 @@ class Expense
             $message = explode(' ', $message);
             
             if (is_numeric($message[0])) return floatval($message[0]);
-            else throw new \Exception('Неправильный формат суммы');
-        } else throw new \Exception('Неправильный формат сообщения');
+            else throw new Exception('Неправильный формат суммы');
+        } else throw new Exception('Неправильный формат сообщения');
     }
 
 }

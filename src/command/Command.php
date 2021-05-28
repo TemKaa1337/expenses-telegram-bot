@@ -25,15 +25,13 @@ class Command
 
     public function executeCommand(Request $request) : string
     {
-        $expenses = new Expense($request->getMessage(), $request->getUserId());
+        $expenses = new Expense($request);
 
         switch ($this->command) {
             case CommandPool::START: return $this->getAllCommandDescriptions($request);
             case CommandPool::DAY_EXPENSES: return $expenses->getDayExpenses();
             case CommandPool::MONTH_EXPENSES: return $expenses->getMonthExpenses(); 
-            case CommandPool::MONTH_STATISTICS: return $expenses->getMonthExpensesStatistics();
             case CommandPool::PREVIOUS_MONTH_EXPENSES: return $expenses->getPreviousMonthExpenses();
-            case CommandPool::PREVIOUS_MONTH_STATISTICS: return $expenses->getPreviousMonthExpensesStatistics();
             default:
                 if (
                     Helper::str($this->command)->startsWith('/delete') && 
@@ -49,8 +47,8 @@ class Command
     {
         $result = [];
         $descriptions = CommandPool::COMMAND_DESCRIPTIONS;
-        $user = new User($request->getUserId());
-        $user->createUserIfNeeded($request->getFirstName(), $request->getSecondName());
+
+        $user = new User($request, true);
 
         foreach ($descriptions as $command => $description) {
             $result[] = "{$command} - {$description}";
