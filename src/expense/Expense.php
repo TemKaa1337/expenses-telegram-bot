@@ -3,23 +3,33 @@ declare(strict_types = 1);
 
 namespace App\Expense;
 
-use App\Http\Request;
+use App\Categories\Categories;
 use App\Database\Database;
+use App\Http\Request;
+use App\Model\User;
 
 class Expense
 {
-    private Request $request;
+    private User $user;
     private Database $db;
+    private float $amount;
+    private string $category;
 
-    public function __construct(Request $request)
+    public function __construct(string $message, int $requestUserId)
     {
-        $this->request = $request;
+        $categories = new Categories($message);
+
         $this->db = new Database();
+        $this->user = new User($requestUserId, $this->db);
+        $this->category = $categories->getCategory();
+        $this->amount = $this->getAmount($message);
     }
 
     public function addExpense() : string
     {
-        return '';
+        $this->user->addExpense($this->amount);
+
+        return 'Новая трата добавлена успешно!';
     }
 
     public function getMonthExpenses() : string
@@ -37,11 +47,6 @@ class Expense
         return '';
     }
 
-    public function deleteExpense() : string
-    {
-        return '';
-    }
-
     public function getMonthExpensesStatistics() : string
     {
         return ''; 
@@ -50,6 +55,23 @@ class Expense
     public function getPreviousMonthExpensesStatistics() : string
     {
         return '';
+    }
+
+    public function deleteExpense(int $expenseId) : string
+    {
+        $this->user->deleteExpense($expenseId);
+
+        return 'Трата успешно удалена!';
+    }
+
+    public function getAmount(string $message) : float
+    {
+        if (strpos($message, ' ') !== false) {
+            $message = explode(' ', $message);
+            
+            if (is_numeric($message[0])) return floatval($message[0]);
+            else throw new \Exception('Неправильный формат суммы');
+        } else throw new \Exception('Неправильный формат сообщения');
     }
 
 }

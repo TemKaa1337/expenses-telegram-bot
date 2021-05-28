@@ -7,6 +7,7 @@ use App\Http\Request;
 use App\Helper\Helper;
 use App\Command\CommandPool;
 use App\Expense\Expense;
+use App\Model\User;
 
 class Command
 {
@@ -24,24 +25,32 @@ class Command
 
     public function executeCommand(Request $request) : string
     {
-        $expenses = new Expense($request);
+        $expenses = new Expense($request->getMessage(), $request->getUserId());
 
         switch ($this->command) {
-            case CommandPool::START: return $this->getAllCommandDescriptions();
+            case CommandPool::START: return $this->getAllCommandDescriptions($request);
             case CommandPool::DAY_EXPENSES: return $expenses->getDayExpenses();
-            case CommandPool::DELETE_EXPENSE: return $expenses->deleteExpense();
             case CommandPool::MONTH_EXPENSES: return $expenses->getMonthExpenses(); 
             case CommandPool::MONTH_STATISTICS: return $expenses->getMonthExpensesStatistics();
             case CommandPool::PREVIOUS_MONTH_EXPENSES: return $expenses->getPreviousMonthExpenses();
-            case CommandPool::PREVIOUS_MONTH_STATISTICS:return $expenses->getPreviousMonthExpensesStatistics();
-            default: return 'Такой команды не существует :(';
+            case CommandPool::PREVIOUS_MONTH_STATISTICS: return $expenses->getPreviousMonthExpensesStatistics();
+            default:
+                if (
+                    Helper::str($this->command)->startsWith('/delete') && 
+                    strlen($this->command) == 8
+                )
+                    return $expenses->deleteExpense(intval(substr($this->command, -1)));
+
+                return 'Такой команды не существует :(';
         }
     }
 
-    public function getAllCommandDescriptions() : string
+    public function getAllCommandDescriptions(Request $request) : string
     {
         $result = [];
         $descriptions = CommandPool::COMMAND_DESCRIPTIONS;
+        $user = new User($request->getUserId());
+        $user->createUserIfNeeded($request->getFirstName(), $request->getSecondName());
 
         foreach ($descriptions as $command => $description) {
             $result[] = "{$command} - {$description}";

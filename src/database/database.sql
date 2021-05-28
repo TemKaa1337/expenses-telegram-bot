@@ -4,14 +4,12 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     telegram_id INTEGER,
     first_name VARCHAR,
-    second_name VARCHAR,
-    last_latitude NUMERIC(10, 8),
-    last_longitude NUMERIC(10, 8)
+    second_name VARCHAR
 );
 
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
-    category_name VARCHAR
+    category_name VARCHAR UNIQUE
 );
 
 CREATE TABLE categories_aliases (
@@ -26,3 +24,5 @@ CREATE TABLE expenses (
     amount NUMERIC(6, 2),
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
+
+INSERT INTO categories(category_name) values ('Еда'), ('Квартира'), ('Кафе'), ('Развлечения'), ('Еда'), ('Еда');

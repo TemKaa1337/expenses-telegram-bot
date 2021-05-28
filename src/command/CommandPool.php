@@ -9,7 +9,6 @@ class CommandPool
     const MONTH_EXPENSES = '/month_expenses';
     const DAY_EXPENSES = '/day_expenses';
     const PREVIOUS_MONTH_EXPENSES = '/previous_month_expenses';
-    const DELETE_EXPENSE = '/delete_expense';
     const MONTH_STATISTICS = '/month_statistics';
     const PREVIOUS_MONTH_STATISTICS = '/previous_month_statistics';
 
@@ -18,7 +17,6 @@ class CommandPool
         self::MONTH_EXPENSES => '',
         self::DAY_EXPENSES => '',
         self::PREVIOUS_MONTH_EXPENSES => '',
-        self::DELETE_EXPENSE => '',
         self::MONTH_STATISTICS => '',
         self::PREVIOUS_MONTH_STATISTICS => ''
     ];

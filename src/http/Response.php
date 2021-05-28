@@ -24,11 +24,14 @@ class Response
         if ($this->request->isCommand) {
             $response = $this->request->getCommand()->executeCommand($this->request);
         } else {
-            $expense = new Expense($this->request);
-            $expense->addExpense();
+            $expense = new Expense($this->request->getMessage(), $this->request->getUserId());
+            $response = $expense->addExpense();
         }
 
-        $this->sendResponse($response);
+        $this->sendResponse([
+            'chat_id' => $this->request->getChatId(), 
+            'message' => $response
+        ]);
     }
 
     public function sendResponse(array $data = [], string $method = 'sendMessage') : array
