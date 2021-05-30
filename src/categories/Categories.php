@@ -24,10 +24,9 @@ class Categories
             $result = $this->db->execute($query, [$category]);
 
             if (!empty($result)) return $result['category_id'];
-            else return 'Другое';
         }
         
-        return 'Другое';
+        return $this->db->execute('SELECT id FROM categories where category_name = ?', ['Другое'])['id'];
     }
 }
 

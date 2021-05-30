@@ -3,15 +3,13 @@ declare(strict_types = 1);
 
 namespace App\Http;
 
-use App\Command\Command;
-
 class Request
 {
-    private int $chatId;
-    private int $userId;
-    private string $message;
-    private bool $isCommand;
-    private Command $command;
+    protected int $chatId;
+    protected int $userId;
+    protected string $message;
+    protected string $firstName;
+    protected string $secondName;
 
     public function __construct()
     {
@@ -21,18 +19,6 @@ class Request
         $this->chatId = $input['message']['chat']['id'];
         $this->userId = $input['message']['from']['id'];
         $this->message = $input['message']['text'];
-
-        $command = new Command($this->message);
-        $this->isCommand = $command->isCommand();
-
-        if ($this->isCommand) {
-            $this->command = $command;
-        }
-    }
-
-    public function getCommand() : Command
-    {
-        return $this->command;
     }
 
     public function getChatId() : int

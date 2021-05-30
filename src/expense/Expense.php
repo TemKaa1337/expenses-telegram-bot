@@ -16,14 +16,12 @@ class Expense
     private float $amount;
     private int $categoryId;
 
-    public function __construct(Request $request)
+    public function __construct(User $user, Database $db, int $categoryId, string $message)
     {
-        $this->db = new Database();
-        $categories = new Categories($request->getMessage(), $this->db);
-
-        $this->user = new User($request, false, $this->db);
-        $this->categoryId = $categories->getCategoryId();
-        $this->amount = $this->getAmount($request->getMessage());
+        $this->db = $db;
+        $this->user = $user;
+        $this->categoryId = $categoryId;
+        $this->amount = $this->getAmount($message);
     }
 
     public function addExpense() : string
@@ -64,8 +62,8 @@ class Expense
             $message = explode(' ', $message);
             
             if (is_numeric($message[0])) return floatval($message[0]);
-            else throw new Exception('Неправильный формат суммы');
-        } else throw new Exception('Неправильный формат сообщения');
+            else throw new Exception('Неправильный формат суммы.');
+        } else throw new Exception('Неправильный формат сообщения.');
     }
 
 }

@@ -2,18 +2,32 @@
 
 namespace App;
 
-use App\Http\Request;
-use App\Http\Response;
+use App\Categories\Categories;
 use App\Database\Database;
+use App\Command\Command;
+use App\Expense\Expense;
+use App\Http\Response;
+use App\Http\Request;
+use App\Model\User;
 
 class App
 {
     public function index() : void
     {
+        $db = new Database();
         $request = new Request();
-        $response = new Response($request);
+        $user = new User($request, $db);
 
-        $response->handleRequest();
+        $category = new Categories($request->getMessage(), $db);
+        $categoryId = $category->getCategoryId();
+
+        $expense = new Expense($user, $db, $categoryId, $request->getMessage());
+
+        $command = new Command($request->getMessage(), $expense);
+        $responseMessage = $command->handle();
+
+        $response = new Response($request->getChatId());
+        $response->sendResponse($responseMessage);
     }
 }
 

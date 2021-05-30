@@ -12,18 +12,15 @@ class User
     private int $requestUserId;
     private Database $db;
 
-    public function __construct(Request $request, bool $isNewUser, Database $db = new Database())
+    public function __construct(Request $request, Database $db)
     {
         $this->requestUserId = $request->getUserId();
         $this->db = $db;
 
-        if ($isNewUser) {
-            //TODO проверить точно ли такого юзера нет и добавить если надо
-            $isUserExist = $this->db->execute('SELECT id FROM users WHERE telegram_id = ?', [$this->requestUserId]);
+        $isUserExist = $this->db->execute('SELECT id FROM users WHERE telegram_id = ?', [$this->requestUserId]);
 
-            if (empty($isUserExist)) {
-                $this->createUser($request->getFirstName(), $request->getSecondName());
-            }
+        if (empty($isUserExist)) {
+            $this->createUser($request->getFirstName(), $request->getSecondName());
         }
 
         $this->userId = $this->getUserId();
@@ -51,19 +48,22 @@ class User
 
     public function getMonthExpenses() : array
     {
-        $query = "SELECT * FROM expenses WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date)";
+        // TODO добавить orderBy и groupBy
+        $query = "SELECT expenses.*, category.category_name FROM expenses join category on expenses.category_id = category.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date)";
         return $this->db->execute($query, [$this->userId]);
     }
 
     public function getDayExpenses() : array
     {
-        $query = "SELECT * FROM expenses WHERE user_id = ? AND DATE(created_at) = now()::date";
+        // TODO добавить orderBy и groupBy
+        $query = "SELECT expenses.*, category.category_name FROM expenses join category on expenses.category_id = category.id WHERE user_id = ? AND DATE(created_at) = now()::date ";
         return $this->db->execute($query, [$this->userId]);
     }
 
     public function getPreviousMonthExpenses() : array
     {
-        $query = "SELECT * FROM expenses WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1 AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1";
+        // TODO добавить orderBy и groupBy
+        $query = "SELECT expenses.*, category.category_name FROM expenses join category on expenses.category_id = category.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1 AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1 ";
         return $this->db->execute($query, [$this->userId]);
     }
 

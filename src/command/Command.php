@@ -12,43 +12,49 @@ use App\Model\User;
 class Command
 {
     private string $command;
+    private Expense $expense;
 
-    public function __construct(string $command)
+    public function __construct(string $command, Expense $expense)
     {
         $this->command = $command;
+        $this->expense = $expense;
     }
 
     public function isCommand() : bool
     {
-        return Helper::str($this->command)->startsWith('/');
+        return Helper::str($this->message)->startsWith('/');
     }
 
-    public function executeCommand(Request $request) : string
+    public function handle() : string
     {
-        $expenses = new Expense($request);
+        $isCommand = $this->isCommand();
 
-        switch ($this->command) {
-            case CommandPool::START: return $this->getAllCommandDescriptions($request);
-            case CommandPool::DAY_EXPENSES: return $expenses->getDayExpenses();
-            case CommandPool::MONTH_EXPENSES: return $expenses->getMonthExpenses(); 
-            case CommandPool::PREVIOUS_MONTH_EXPENSES: return $expenses->getPreviousMonthExpenses();
-            default:
-                if (
-                    Helper::str($this->command)->startsWith('/delete') && 
-                    strlen($this->command) == 8
-                )
-                    return $expenses->deleteExpense(intval(substr($this->command, -1)));
+        if ($isCommand) {
+            switch ($this->command) {
+                case CommandPool::START: return $this->getAllCommandDescriptions();
+                case CommandPool::DAY_EXPENSES: return $this->expense->getDayExpenses();
+                case CommandPool::MONTH_EXPENSES: return $this->expense->getMonthExpenses(); 
+                case CommandPool::PREVIOUS_MONTH_EXPENSES: return $this->expense->getPreviousMonthExpenses();
+                default:
+                    if (
+                        Helper::str($this->command)->startsWith('/delete') && 
+                        strlen($this->command) == 8
+                    ) {
+                        $expenseId = intval(substr($this->command, -1));
 
-                return 'Такой команды не существует :(';
-        }
+                        if ($expenseId !== 0)
+                            return $this->expense->deleteExpense($expenseId);
+                    }
+    
+                    return 'Такой команды не существует :(';
+            }
+        } else return $this->expense->addExpense();
     }
 
-    public function getAllCommandDescriptions(Request $request) : string
+    public function getAllCommandDescriptions() : string
     {
         $result = [];
         $descriptions = CommandPool::COMMAND_DESCRIPTIONS;
-
-        $user = new User($request, true);
 
         foreach ($descriptions as $command => $description) {
             $result[] = "{$command} - {$description}";

@@ -4,40 +4,23 @@ declare(strict_types = 1);
 namespace App\Http;
 
 use App\Config\BotConfig;
-use App\Expense\Expense;
-use App\Http\Request;
-use App\Database\Database;
 
 class Response
 {
-    public Request $request;
     private BotConfig $config;
+    private int $chatId;
 
-    public function __construct(Request $request)
+    public function __construct(int $chatId)
     {
-        $this->request = $request;
+        $this->chatId = $chatId;
         $this->config = new BotConfig();
     }
 
-    public function handleRequest() : void
-    {
-        if ($this->request->isCommand) {
-            $response = $this->request->getCommand()->executeCommand($this->request);
-        } else {
-            $expense = new Expense($this->request);
-            $response = $expense->addExpense();
-        }
-
-        $this->sendResponse([
-            'chat_id' => $this->request->getChatId(), 
-            'message' => $response
-        ]);
-    }
-
-    public function sendResponse(array $data = [], string $method = 'sendMessage') : array
+    public function sendResponse(string $message, string $method = 'sendMessage') : array
     {
         $key = $this->config->getBotKey();
         $curl = curl_init(); 
+        $data = ['chat_id' => $this->chatId, 'text' => $message];
           
         curl_setopt($curl, CURLOPT_URL, "https://api.telegram.org/bot{$key}/{$method}");
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
