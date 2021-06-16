@@ -10,6 +10,7 @@ class WebhookInstall
     private string $key;
     private string $username;
     private string $webhookUrl;
+    private string $certificatePath;
 
     public function __construct()
     {
@@ -31,9 +32,12 @@ class WebhookInstall
             CURLOPT_POST => true,
             CURLOPT_SAFE_UPLOAD => false,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => array('url' => $this->webhookUrl, 'certificate' => '@' . realpath($this->certificatePath))
+            CURLOPT_POSTFIELDS => array('url' => $this->webhookUrl, 'certificate' => '@' . $this->certificatePath)
         ];
 
+        var_dump($optArray);
+        exit;
+        
         curl_setopt_array($ch, $optArray);
         
         $result = curl_exec($ch);
