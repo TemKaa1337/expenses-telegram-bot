@@ -13,7 +13,7 @@ class BotConfig
 
     public function __construct()
     {
-        $botInfo = json_decode(file_get_contents('secret/bot_config.json'), true);
+        $botInfo = json_decode(file_get_contents(__DIR__.'/Secret/bot_config.json'), true);
 
         $this->botKey = $botInfo['key'];
         $this->botUsername = $botInfo['username'];
