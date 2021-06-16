@@ -28,19 +28,14 @@ class WebhookInstall
     public function setHook()
     {
         $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->webhookInstallUrl);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+        curl_setopt($ch, CURLOPT_BUFFERSIZE, 128);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, array('url' => $this->webhookUrl, 'certificate' => new \CURLFile($this->certificatePath)));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        $optArray =[
-            CURLOPT_URL => $this->webhookInstallUrl,
-            CURLOPT_POST => true,
-            CURLOPT_SAFE_UPLOAD => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => array('url' => $this->webhookUrl, 'certificate' => new \CURLFile($this->certificatePath))
-        ];
-
-        curl_setopt_array($ch, $optArray, true);
-        
-        $result = curl_exec($ch);
-        print_r($result);
+        $response = curl_exec ($ch);
+        print_r($response);
         curl_close($ch);
     }
 }
