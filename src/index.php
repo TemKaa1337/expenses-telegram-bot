@@ -28,8 +28,12 @@ class App
         // $command = new Command($request->getMessage(), $expense);
         // $responseMessage = $command->handle();
 
-        $response = new Response($request->getChatId());
+        $input = file_get_contents('php://input'); 
+        $input = json_decode($input, true);
+        
+        $response = new Response($input['message']['chat']['id']);
         $response->sendResponse('asdasd');
+        // $response = new Response($request->getChatId());
         // $response->sendResponse($responseMessage);
     }
 }
