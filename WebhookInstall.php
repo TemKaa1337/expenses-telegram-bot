@@ -3,10 +3,7 @@ declare(strict_types = 1);
 
 namespace App;
 
-require('vendor/autoload.php');
-
-use Longman\TelegramBot\Telegram;
-use Longman\TelegramBot\Exception\TelegramException;
+use App\Config\BotConfig;
 
 class WebhookInstall
 {
@@ -16,27 +13,16 @@ class WebhookInstall
 
     public function __construct()
     {
-        $botInfo = json_decode(file_get_contents('config.json'), true);
+        $botConfig = new BotConfig();
 
-        $this->key = $botInfo['key'];
-        $this->username = $botInfo['username'];
-        $this->webhookUrl = $botInfo['webhook'];
+        $this->key = $botConfig->getBotKey();
+        $this->username = $botConfig->getBotUsername();
+        $this->webhookUrl = $botConfig->getBotWebhookUrl();
     }
 
     public function setHook()
     {
-        try {
-            $telegram = new Telegram($this->key, $this->username);
-
-            $webhook = $telegram->setWebhook($this->webhookUrl, ['certificate' => '/path/to/certificate']);
-            
-            if ($webhook->isOk()) {
-                echo $webhook->getDescription();
-            } else var_dump($webhook);
-
-        } catch (TelegramException $e) {
-            echo $e->getMessage();
-        }
+        
     }
 }
 
