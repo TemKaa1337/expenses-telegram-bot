@@ -16,20 +16,21 @@ class App
 {
     public function index() : void
     {
-        $db = new Database();
+        // $db = new Database();
         $request = new Request();
-        $user = new User($request, $db);
+        // $user = new User($request, $db);
 
-        $category = new Categories($request->getMessage(), $db);
-        $categoryId = $category->getCategoryId();
+        // $category = new Categories($request->getMessage(), $db);
+        // $categoryId = $category->getCategoryId();
 
-        $expense = new Expense($user, $db, $categoryId, $request->getMessage());
+        // $expense = new Expense($user, $db, $categoryId, $request->getMessage());
 
-        $command = new Command($request->getMessage(), $expense);
-        $responseMessage = $command->handle();
+        // $command = new Command($request->getMessage(), $expense);
+        // $responseMessage = $command->handle();
 
         $response = new Response($request->getChatId());
-        $response->sendResponse($responseMessage);
+        $response->sendResponse('asdasd');
+        // $response->sendResponse($responseMessage);
     }
 }
 
