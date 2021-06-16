@@ -8,6 +8,8 @@ class BotConfig
     private string $botKey;
     private string $botUsername;
     private string $botWebhookUrl;
+    private string $certificatePath;
+    private string $installWebhookUrl;
 
     public function __construct()
     {
@@ -16,6 +18,8 @@ class BotConfig
         $this->botKey = $botInfo['key'];
         $this->botUsername = $botInfo['username'];
         $this->botWebhookUrl = $botInfo['webhook'];
+        $this->installWebhookUrl = $botInfo['setWebhook'];
+        $this->certificatePath = $botInfo['certificatePath'];
     }
 
     public function getBotKey() : string
@@ -31,6 +35,16 @@ class BotConfig
     public function getBotWebhookUrl() : string
     {
         return $this->botWebhookUrl;
+    }
+
+    public function getInstallWebhookUrl() : string
+    {
+        return $this->installWebhookUrl;
+    }
+
+    public function getCertificatePath() : string
+    {
+        return $this->certificatePath;
     }
 }
 

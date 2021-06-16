@@ -18,11 +18,29 @@ class WebhookInstall
         $this->key = $botConfig->getBotKey();
         $this->username = $botConfig->getBotUsername();
         $this->webhookUrl = $botConfig->getBotWebhookUrl();
+        $this->webhookInstallUrl = $botConfig->getInstallWebhookUrl();
+        $this->certificatePath = $botConfig->getCertificatePath();
     }
 
     public function setHook()
     {
+        $ch = curl_init();
+
+        $optArray =[
+            CURLOPT_URL => $this->webhookInstallUrl,
+            CURLOPT_POST => true,
+            CURLOPT_SAFE_UPLOAD => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POSTFIELDS => array('url' => $this->webhookUrl, 'certificate' => '@' . realpath($this->certificatePath))
+        ];
+
+        curl_setopt_array($ch, $optArray);
         
+        $result = curl_exec($ch);
+        echo "<pre>";
+        print_r($result);
+        echo "</pre>";
+        curl_close($ch);
     }
 }
 
