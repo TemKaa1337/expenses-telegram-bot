@@ -37,7 +37,7 @@ class WebhookInstall
             CURLOPT_POSTFIELDS => array('url' => $this->webhookUrl, 'certificate' => new \CURLFile($this->certificatePath))
         ];
 
-        curl_setopt_array($ch, $optArray);
+        curl_setopt_array($ch, $optArray, true);
         
         $result = curl_exec($ch);
         print_r($result);
