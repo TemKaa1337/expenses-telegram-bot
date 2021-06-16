@@ -34,7 +34,7 @@ class WebhookInstall
             CURLOPT_POST => true,
             CURLOPT_SAFE_UPLOAD => false,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POSTFIELDS => array('url' => $this->webhookUrl, 'certificate' => '@' . $this->certificatePath)
+            CURLOPT_POSTFIELDS => array('url' => $this->webhookUrl, 'certificate' => curl_file_create($this->certificatePath))
         ];
 
         curl_setopt_array($ch, $optArray);
