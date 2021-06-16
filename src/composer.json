@@ -1,0 +1,14 @@
+{
+    "autoload": {
+        "psr-4": {
+            "App\\Categories\\": "Categories/",
+            "App\\Command\\": "Command/",
+            "App\\Config\\": "Config/",
+            "App\\Database\\": "Database/",
+            "App\\Expense\\": "Expense/",
+            "App\\Helper\\": "Helper/",
+            "App\\Http\\": "Http/",
+            "App\\Model\\": "Model/"
+        }
+    }
+}

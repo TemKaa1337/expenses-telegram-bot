@@ -2,6 +2,8 @@
 
 namespace App;
 
+include('vendor/autoload.php');
+
 use App\Categories\Categories;
 use App\Database\Database;
 use App\Command\Command;

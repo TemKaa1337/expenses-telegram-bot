@@ -13,7 +13,7 @@ class DatabaseConfig
 
     public function __construct()
     {
-        $databaseInfo = json_decode(file_get_contents('secret/database_config.json'), true);
+        $databaseInfo = json_decode(file_get_contents(__DIR__.'/Secret/database_config.json'), true);
 
         $this->host = $databaseInfo['host'];
         $this->port = $databaseInfo['port'];

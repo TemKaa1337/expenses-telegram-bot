@@ -3,6 +3,8 @@ declare(strict_types = 1);
 
 namespace App;
 
+include('vendor/autoload.php');
+
 use App\Config\BotConfig;
 
 class WebhookInstall
