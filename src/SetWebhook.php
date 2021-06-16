@@ -35,7 +35,7 @@ class WebhookInstall
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec ($ch);
-        print_r($response);
+        var_dump($response);
         curl_close($ch);
     }
 }
