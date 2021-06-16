@@ -36,15 +36,11 @@ class WebhookInstall
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POSTFIELDS => array('url' => $this->webhookUrl, 'certificate' => '@' . $this->certificatePath)
         ];
-        var_dump($optArray);
-        exit;
 
         curl_setopt_array($ch, $optArray);
         
         $result = curl_exec($ch);
-        echo "<pre>";
         print_r($result);
-        echo "</pre>";
         curl_close($ch);
     }
 }
