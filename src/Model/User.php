@@ -49,21 +49,21 @@ class User
     public function getMonthExpenses() : array
     {
         // TODO добавить orderBy и groupBy
-        $query = "SELECT expenses.*, category.category_name FROM expenses join category on expenses.category_id = category.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date)";
+        $query = "SELECT expenses.*, categories.category_name FROM expenses join categories on expenses.category_id = categories.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date)";
         return $this->db->execute($query, [$this->userId]);
     }
 
     public function getDayExpenses() : array
     {
         // TODO добавить orderBy и groupBy
-        $query = "SELECT expenses.*, category.category_name FROM expenses join category on expenses.category_id = category.id WHERE user_id = ? AND DATE(created_at) = now()::date ";
+        $query = "SELECT expenses.*, categories.category_name FROM expenses join categories on expenses.category_id = categories.id WHERE user_id = ? AND DATE(created_at) = now()::date ";
         return $this->db->execute($query, [$this->userId]);
     }
 
     public function getPreviousMonthExpenses() : array
     {
         // TODO добавить orderBy и groupBy
-        $query = "SELECT expenses.*, category.category_name FROM expenses join category on expenses.category_id = category.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1 AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1 ";
+        $query = "SELECT expenses.*, categories.category_name FROM expenses join categories on expenses.category_id = categories.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1 AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1 ";
         return $this->db->execute($query, [$this->userId]);
     }
 
