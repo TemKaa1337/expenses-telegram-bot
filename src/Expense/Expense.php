@@ -37,19 +37,19 @@ class Expense
     public function getMonthExpenses() : string
     {
         $expenses = $this->user->getMonthExpenses();
-        return '';
+        return 'getMonthExpenses';
     }
 
     public function getDayExpenses() : string
     {
         $expenses = $this->user->getDayExpenses();
-        return '';
+        return 'getDayExpenses';
     }
 
     public function getPreviousMonthExpenses() : string
     {
         $expenses = $this->user->getPreviousMonthExpenses();
-        return '';
+        return 'getPreviousMonthExpenses';
     }
 
     public function deleteExpense(int $expenseId) : string
