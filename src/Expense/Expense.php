@@ -14,19 +14,20 @@ class Expense
 {
     private User $user;
     private Database $db;
-    private float $amount;
+    private string|float $amount;
     private int $categoryId;
 
-    public function __construct(User $user, Database $db, int $categoryId, string $message)
+    public function __construct(User $user, Database $db, int $categoryId, string|float $message)
     {
         $this->db = $db;
         $this->user = $user;
         $this->categoryId = $categoryId;
-        $this->amount = $this->getAmount($message);
+        $this->amount = $message;
     }
 
     public function addExpense() : string
     {
+        $this->amount = $this->getAmount($this->amount);
         $this->user->addExpense($this->amount, $this->categoryId);
 
         return 'Новая трата добавлена успешно!';
@@ -66,7 +67,6 @@ class Expense
             else throw new InvalidInputException('Неправильный формат суммы.');
         } else throw new InvalidInputException('Неправильный формат сообщения.');
     }
-
 }
 
 ?>
