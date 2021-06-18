@@ -61,7 +61,7 @@ class Command
             $result[] = "{$command} - {$description}";
         }
 
-        return implode('\\n', $result);
+        return urlencode(implode('\n', $result));
     }
 }
 
