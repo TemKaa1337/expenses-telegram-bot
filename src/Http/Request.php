@@ -20,7 +20,9 @@ class Request
         $this->input = $input;
         $this->chatId = $input['message']['chat']['id'];
         $this->userId = $input['message']['from']['id'];
-        $this->message = $input['message']['text'];
+        $this->message = $this->formatMessage($input['message']['text']);
+        $this->firstName = $input['message']['from']['first_name'];
+        $this->secondName = $input['message']['text']['last_name'];
     }
 
     public function getChatId() : int
@@ -40,17 +42,22 @@ class Request
 
     public function getFirstName() : string
     {
-        return '';
+        return $this->firstName;
     }
 
     public function getSecondName() : string
     {
-        return '';
+        return $this->secondName;
     }
 
     public function getInput() : array
     {
         return $this->input;
+    }
+
+    protected function formatMessage(string $message) : string
+    {
+        return str_replace('\\', '', $message);
     }
 }
 
