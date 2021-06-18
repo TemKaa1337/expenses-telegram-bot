@@ -36,7 +36,7 @@ class User
     private function getUserId() : int
     {
         $user = $this->db->execute('SELECT id FROM users WHERE telegram_id = ?', [$this->requestUserId]);
-        return $user['id'];
+        return $user[0]['id'];
     }
 
     public function addExpense(float $amount, int $categoryId) : void
