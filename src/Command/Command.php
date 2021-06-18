@@ -61,7 +61,7 @@ class Command
             $result[] = "{$command} - {$description}";
         }
 
-        return urlencode(implode('\n', $result));
+        return implode(PHP_EOL, $result);
     }
 }
 
