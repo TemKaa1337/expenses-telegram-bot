@@ -44,7 +44,7 @@ class Expense
         $totalSumm = 0;
 
         foreach ($expenses as $expense) {
-            $result[] = date('Y-m-d H:i:s', strtotime($expense['created_at']))." - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+            $result[] = date('d.m.Y H:i:s', strtotime($expense['created_at']))." - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
 
             $totalSumm += $expense['amount'];
         }
