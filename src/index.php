@@ -4,6 +4,8 @@ namespace App;
 
 include('vendor/autoload.php');
 
+use App\Exception\InvalidCommandException;
+use App\Exception\InvalidInputException;
 use App\Categories\Categories;
 use App\Database\Database;
 use App\Command\Command;
@@ -18,9 +20,9 @@ class App
     public function index() : void
     {
         $db = new Database();
+        $request = new Request();
 
         try {
-            $request = new Request();
             $user = new User($request, $db);
 
             $category = new Categories($request->getMessage(), $db);
@@ -30,11 +32,20 @@ class App
 
             $command = new Command($request->getMessage(), $expense);
             $responseMessage = $command->handle();
-
+            
             $response = new Response($request->getChatId());
             $response->sendResponse($responseMessage);
+
         } catch (Exception $e) {
             $db->execute('INSERT INTO exception_logging (stack_trace, message, file, line, created_at) VALUES (?, ?, ?, ?, ?)', [$e->getTraceAsString(), $e->getMessage(), $e->getFile(), $e->getLine(), date('Y-m-d H:i:s', strtotime('+3 hours'))]);
+            $response = new Response($request->getChatId());
+            $response->sendResponse('Случилась неизвестная ошибка, надо чекать логи((');
+        } catch (InvalidInputException $e) {
+            $response = new Response($request->getChatId());
+            $response->sendResponse($e->getMessage());
+        } catch (InvalidCommandException $e) {
+            $response = new Response($request->getChatId());
+            $response->sendResponse($e->getMessage());
         }
     }
 }

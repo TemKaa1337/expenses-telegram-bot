@@ -6,6 +6,7 @@ namespace App\Command;
 use App\Http\Request;
 use App\Helper\Helper;
 use App\Command\CommandPool;
+use App\Exception\InvalidCommandException;
 use App\Expense\Expense;
 use App\Model\User;
 
@@ -46,7 +47,7 @@ class Command
                             return $this->expense->deleteExpense($expenseId);
                     }
     
-                    return 'Такой команды не существует :(';
+                    throw new InvalidCommandException('Такой команды не существует :(');
             }
         } else return $this->expense->addExpense();
     }
