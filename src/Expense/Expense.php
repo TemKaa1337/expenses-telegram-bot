@@ -77,7 +77,21 @@ class Expense
     public function getPreviousMonthExpenses() : string
     {
         $expenses = $this->user->getPreviousMonthExpenses();
-        return 'getPreviousMonthExpenses';
+        
+        if (empty($expenses)) return 'В прошлом месяце не было трат!';
+
+        $result = [];
+        $totalSumm = 0;
+
+        foreach ($expenses as $expense) {
+            $result[] = date('d.m.Y H:i:s', strtotime($expense['created_at']))." - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+
+            $totalSumm += $expense['amount'];
+        }
+
+        $result[] = "Итого {$totalSumm}р.";
+
+        return implode(PHP_EOL, $result);
     }
 
     public function deleteExpense(int $expenseId) : string
