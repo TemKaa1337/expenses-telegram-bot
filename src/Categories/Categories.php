@@ -39,7 +39,7 @@ class Categories
         $result = [];
 
         foreach ($aliases as $alias) {
-            if (isset($result[$alias['category_name']]))
+            if (isset($temp[$alias['category_name']]))
                 $temp[$alias['category_name']][] = $alias['alias'];
             else
                 $temp[$alias['category_name']] = [$alias['alias']];
