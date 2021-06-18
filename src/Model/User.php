@@ -60,8 +60,7 @@ class User
 
     public function getPreviousMonthExpenses() : array
     {
-        // TODO добавить orderBy и groupBy
-        $query = "SELECT expenses.*, categories.category_name FROM expenses join categories on expenses.category_id = categories.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1 AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) - 1";
+        $query = "SELECT expenses.*, categories.category_name FROM expenses join categories on expenses.category_id = categories.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date - INTERVAL '1 MONTH') AND date_trunc('year', created_at) = date_trunc('year', NOW()::date - INTERVAL '1 MONTH') order by expenses.id asc";
         return $this->db->execute($query, [$this->userId]);
     }
 
