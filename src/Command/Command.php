@@ -3,8 +3,10 @@ declare(strict_types = 1);
 
 namespace App\Command;
 
+use App\Categories\Categories;
 use App\Exception\InvalidCommandException;
 use App\Command\CommandPool;
+use App\Database\Database;
 use App\Expense\Expense;
 use App\Helper\Helper;
 use App\Http\Request;
@@ -36,6 +38,9 @@ class Command
                 case CommandPool::DAY_EXPENSES: return $this->expense->getDayExpenses();
                 case CommandPool::MONTH_EXPENSES: return $this->expense->getMonthExpenses(); 
                 case CommandPool::PREVIOUS_MONTH_EXPENSES: return $this->expense->getPreviousMonthExpenses();
+                case CommandPool::ALIASES:
+                    $categories = new Categories('', new Database());
+                    return $categories->getListOfAllAliases();
                 default:
                     if (
                         Helper::str($this->command)->startsWith('/delete') && 
