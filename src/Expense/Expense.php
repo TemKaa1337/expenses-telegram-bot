@@ -43,7 +43,19 @@ class Expense
     public function getDayExpenses() : string
     {
         $expenses = $this->user->getDayExpenses();
-        return 'getDayExpenses';
+
+        if (empty($expenses)) return 'На сегодня трат нет!';
+
+        $result = [];
+        $totalSumm = 0;
+
+        foreach ($expenses as $expense) {
+            $result[] = date('H:i:s', strtotime($expense['insert_datetime']))." {$expense['amount']}р., {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+        }
+
+        $result[] = "Итого {$totalSumm}р.";
+
+        return implode(PHP_EOL, $result);
     }
 
     public function getPreviousMonthExpenses() : string
@@ -78,6 +90,13 @@ class Expense
                 return implode(' ', array_slice($message, 2, count($message) - 2));
             } else return null;
         } else throw new InvalidInputException('Неправильный формат сообщения.');
+    }
+
+    public function getNoteForOutput(?string $note) : string
+    {
+        if ($note === null) return '';
+
+        return ", {$note}.";
     }
 }
 
