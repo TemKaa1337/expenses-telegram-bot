@@ -5,17 +5,19 @@ namespace App\Http;
 
 class Request
 {
-    protected int $chatId;
-    protected int $userId;
-    protected string $message;
-    protected string $firstName;
-    protected string $secondName;
+    public int $chatId;
+    public int $userId;
+    public string $message;
+    public string $firstName;
+    public string $secondName;
+    public array $input;
 
     public function __construct()
     {
         $input = file_get_contents('php://input'); 
         $input = json_decode($input, true);
 
+        $this->input = $input;
         $this->chatId = $input['message']['chat']['id'];
         $this->userId = $input['message']['from']['id'];
         $this->message = $input['message']['text'];
@@ -44,6 +46,11 @@ class Request
     public function getSecondName() : string
     {
         return '';
+    }
+
+    public function getInput() : array
+    {
+        return $this->input;
     }
 }
 
