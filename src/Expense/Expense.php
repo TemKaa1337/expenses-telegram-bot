@@ -44,7 +44,7 @@ class Expense
         $totalSumm = 0;
 
         foreach ($expenses as $expense) {
-            $result[] = date('d.m.Y H:i:s', strtotime($expense['created_at']))." - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+            $result[] = date('d.m.Y H:i:s', strtotime($expense['created_at']))." (/delete{$expense['id']}) - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
 
             $totalSumm += $expense['amount'];
         }
@@ -64,7 +64,7 @@ class Expense
         $totalSumm = 0;
 
         foreach ($expenses as $expense) {
-            $result[] = date('H:i:s', strtotime($expense['created_at']))." - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+            $result[] = date('H:i:s', strtotime($expense['created_at']))." (/delete{$expense['id']}) - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
 
             $totalSumm += $expense['amount'];
         }
@@ -84,7 +84,7 @@ class Expense
         $totalSumm = 0;
 
         foreach ($expenses as $expense) {
-            $result[] = date('d.m.Y H:i:s', strtotime($expense['created_at']))." - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+            $result[] = date('d.m.Y H:i:s', strtotime($expense['created_at']))." (/delete{$expense['id']}) - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
 
             $totalSumm += $expense['amount'];
         }
@@ -127,6 +127,15 @@ class Expense
         if ($note === null) return '';
 
         return ", {$note}.";
+    }
+
+    public function isUserAllowedToDeleteExpense(int $expenseId) : bool
+    {
+        $isAllowed = $this->db->execute('SELECT user_id FROM expenses WHERE id = ?', [$expenseId]);
+
+        if (empty($isAllowed)) return false;
+
+        return $isAllowed[0]['user_id'] === $this->user->getUserId();
     }
 }
 
