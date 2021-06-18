@@ -3,12 +3,20 @@ DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS category_aliases;
 DROP TABLE IF EXISTS expenses;
 DROP TABLE IF EXISTS exception_logging;
+DROP TABLE IF EXISTS log;
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     telegram_id INTEGER,
     first_name VARCHAR,
     second_name VARCHAR
+);
+
+CREATE TABLE log (
+    id SERIAL PRIMARY KEY,
+    chat_id INTEGER,
+    request JSON,
+    created_at TIMESTAMP
 );
 
 CREATE TABLE categories (

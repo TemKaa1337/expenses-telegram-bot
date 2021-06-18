@@ -13,6 +13,7 @@ use App\Expense\Expense;
 use App\Http\Response;
 use App\Http\Request;
 use App\Model\User;
+use App\Log\Log;
 use Exception;
 
 class App
@@ -23,6 +24,9 @@ class App
         $request = new Request();
 
         try {
+            $log = new Log($db, $request);
+            $log->log();
+            
             $user = new User($request, $db);
 
             $category = new Categories($request->getMessage(), $db);
