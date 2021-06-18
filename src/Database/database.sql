@@ -56,6 +56,7 @@ INSERT INTO categories(category_name) values ('Продукты'), ('Кафе'),
 INSERT INTO category_aliases(category_id, alias) values (1, 'еда');
 INSERT INTO category_aliases(category_id, alias) values (1, 'Еда');
 INSERT INTO category_aliases(category_id, alias) values (1, 'продукты');
+INSERT INTO category_aliases(category_id, alias) values (1, 'магазин');
 INSERT INTO category_aliases(category_id, alias) values (2, 'Рестик');
 INSERT INTO category_aliases(category_id, alias) values (2, 'рестик');
 INSERT INTO category_aliases(category_id, alias) values (2, 'кафе');
