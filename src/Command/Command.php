@@ -61,7 +61,7 @@ class Command
             $result[] = "{$command} - {$description}";
         }
 
-        return implode('%0A', $result);
+        return implode('\\n', $result);
     }
 }
 
