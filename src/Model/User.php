@@ -48,8 +48,7 @@ class User
 
     public function getMonthExpenses() : array
     {
-        // TODO добавить orderBy и groupBy
-        $query = "SELECT expenses.*, categories.category_name FROM expenses join categories on expenses.category_id = categories.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date)";
+        $query = "SELECT expenses.*, categories.category_name FROM expenses join categories on expenses.category_id = categories.id WHERE user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) order by expenses.id asc";
         return $this->db->execute($query, [$this->userId]);
     }
 
