@@ -50,7 +50,9 @@ class Expense
         $totalSumm = 0;
 
         foreach ($expenses as $expense) {
-            $result[] = date('H:i:s', strtotime($expense['created_at']))." {$expense['amount']}р., {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+            $result[] = date('H:i:s', strtotime($expense['created_at']))." - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+
+            $totalSumm += $expense['amount'];
         }
 
         $result[] = "Итого {$totalSumm}р.";
