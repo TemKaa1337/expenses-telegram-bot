@@ -47,7 +47,7 @@ class App
             $response = new Response($request->getChatId());
             $response->sendResponse($e->getMessage());
         } catch (Exception $e) {
-            $db->execute('INSERT INTO exception_logging (stack_trace, message, file, line, created_at) VALUES (?, ?, ?, ?, ?)', [$e->getTraceAsString(), $e->getMessage(), $e->getFile(), $e->getLine(), date('Y-m-d H:i:s', strtotime('+3 hours'))]);
+            $db->execute('INSERT INTO exception_logging (stack_trace, message, file, line, created_at) VALUES (?, ?, ?, ?, ?)', [$e->getTraceAsString(), $e->getMessage(), $e->getFile(), $e->getLine()]);
             $response = new Response($request->getChatId());
             $response->sendResponse('Случилась неизвестная ошибка, надо чекать логи((');
         }

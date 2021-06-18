@@ -19,7 +19,7 @@ class Log
 
     public function log() : void
     {
-        $this->db->execute('INSERT INTO log (chat_id, request, created_at) VALUES (?, ?, ?)', [$this->request->getChatId(), json_encode($this->request->getInput()), date('Y-m-d H:i:s', strtotime('+3 hours'))]);
+        $this->db->execute('INSERT INTO log (chat_id, request, created_at) VALUES (?, ?, ?)', [$this->request->getChatId(), json_encode($this->request->getInput()), date('Y-m-d H:i:s')]);
     }
 }
 

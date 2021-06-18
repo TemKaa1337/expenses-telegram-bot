@@ -27,8 +27,9 @@ class Expense
 
     public function addExpense() : string
     {
+        $note = $this->getNote($this->amount);
         $this->amount = $this->getAmount($this->amount);
-        $this->user->addExpense($this->amount, $this->categoryId);
+        $this->user->addExpense($this->amount, $this->categoryId, $note);
 
         return 'Новая трата добавлена успешно!';
     }
@@ -65,6 +66,15 @@ class Expense
             
             if (is_numeric($message[0])) return floatval($message[0]);
             else throw new InvalidInputException('Неправильный формат суммы.');
+        } else throw new InvalidInputException('Неправильный формат сообщения.');
+    }
+
+    public function getNote(string $message) : ?string
+    {
+        if (strpos($message, ' ') !== false) {
+            $message = explode(' ', $message);
+            
+            return $message[2] ?? null;
         } else throw new InvalidInputException('Неправильный формат сообщения.');
     }
 }
