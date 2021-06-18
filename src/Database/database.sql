@@ -115,3 +115,4 @@ INSERT INTO category_aliases(category_id, alias) values (15, 'телефон');
 INSERT INTO category_aliases(category_id, alias) values (16, 'стоянка');
 INSERT INTO category_aliases(category_id, alias) values (16, 'парковка');
 
+-- \i '/var/www/expenses-telegram-bot/src/Database/database.sql'
