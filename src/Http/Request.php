@@ -22,7 +22,7 @@ class Request
         $this->userId = $input['message']['from']['id'];
         $this->message = $this->formatMessage($input['message']['text']);
         $this->firstName = $input['message']['from']['first_name'];
-        $this->secondName = $input['message']['text']['last_name'];
+        $this->secondName = $input['message']['from']['last_name'];
     }
 
     public function getChatId() : int
