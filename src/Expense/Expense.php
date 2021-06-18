@@ -74,7 +74,9 @@ class Expense
         if (strpos($message, ' ') !== false) {
             $message = explode(' ', $message);
             
-            return $message[2] ?? null;
+            if (count($message) > 2) {
+                return implode(' ', array_slice($message, 2, count($message) - 2));
+            } else return null;
         } else throw new InvalidInputException('Неправильный формат сообщения.');
     }
 }
