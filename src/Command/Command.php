@@ -23,7 +23,7 @@ class Command
 
     public function isCommand() : bool
     {
-        return Helper::str($this->message)->startsWith('/');
+        return Helper::str($this->command)->startsWith('/');
     }
 
     public function handle() : string
