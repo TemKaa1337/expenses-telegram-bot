@@ -1,4 +1,4 @@
-/src/config/secret/
+/src/config/Secret/
 .gitignore
 /cert/
 /src/vendor/
