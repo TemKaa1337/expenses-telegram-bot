@@ -43,8 +43,9 @@ class Command
                     ) {
                         $expenseId = intval(substr($this->command, -1));
 
-                        if ($expenseId !== 0)
+                        if ($expenseId !== 0 && $this->expense->isUserAllowedToDeleteExpense($expenseId))
                             return $this->expense->deleteExpense($expenseId);
+                        else return 'Неправильный номер траты!';
                     }
     
                     throw new InvalidCommandException('Такой команды не существует :(');

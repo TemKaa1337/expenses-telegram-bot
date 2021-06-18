@@ -23,7 +23,7 @@ class User
             $this->createUser($request->getFirstName(), $request->getSecondName());
         }
 
-        $this->userId = $this->getUserId();
+        $this->userId = $this->setUserId();
     }
 
     public function createUser(string $firstName, string $secondName) : void
@@ -33,7 +33,7 @@ class User
         $this->db->execute($query, [$this->requestUserId, $firstName, $secondName]);
     }
 
-    private function getUserId() : int
+    private function setUserId() : int
     {
         $user = $this->db->execute('SELECT id FROM users WHERE telegram_id = ?', [$this->requestUserId]);
         return $user[0]['id'];
@@ -69,6 +69,11 @@ class User
         $query = "DELETE FROM expenses WHERE id = ? AND user_id = ?";
 
         $this->db->execute($query, [$expenseId, $this->userId]);
+    }
+
+    public function getUserId() : int
+    {
+        return $this->userId;
     }
 }
 
