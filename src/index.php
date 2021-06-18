@@ -11,30 +11,31 @@ use App\Expense\Expense;
 use App\Http\Response;
 use App\Http\Request;
 use App\Model\User;
+use Exception;
 
 class App
 {
     public function index() : void
     {
-        // $db = new Database();
-        $request = new Request();
-        // $user = new User($request, $db);
+        $db = new Database();
 
-        // $category = new Categories($request->getMessage(), $db);
-        // $categoryId = $category->getCategoryId();
+        try {
+            $request = new Request();
+            $user = new User($request, $db);
 
-        // $expense = new Expense($user, $db, $categoryId, $request->getMessage());
+            $category = new Categories($request->getMessage(), $db);
+            $categoryId = $category->getCategoryId();
 
-        // $command = new Command($request->getMessage(), $expense);
-        // $responseMessage = $command->handle();
+            $expense = new Expense($user, $db, $categoryId, $request->getMessage());
 
-        $input = file_get_contents('php://input'); 
-        $input = json_decode($input, true);
-        
-        $response = new Response($input['message']['chat']['id']);
-        $response->sendResponse('asdasd');
-        // $response = new Response($request->getChatId());
-        // $response->sendResponse($responseMessage);
+            $command = new Command($request->getMessage(), $expense);
+            $responseMessage = $command->handle();
+
+            $response = new Response($request->getChatId());
+            $response->sendResponse($responseMessage);
+        } catch (Exception $e) {
+            $db->execute('INSERT INTO exception_logging VALUES (?, ?, ?, ?, ?)', [$e->getTraceAsString(), $e->getMessage(), $e->getFile(), $e->getLine(), date('Y-m-d H:i:s')]);
+        }
     }
 }
 
