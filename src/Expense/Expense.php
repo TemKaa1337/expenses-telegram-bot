@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Expense;
 
+use App\Exception\InvalidInputException;
 use App\Categories\Categories;
 use App\Database\Database;
 use App\Http\Request;
@@ -62,8 +63,8 @@ class Expense
             $message = explode(' ', $message);
             
             if (is_numeric($message[0])) return floatval($message[0]);
-            else throw new Exception('Неправильный формат суммы.');
-        } else throw new Exception('Неправильный формат сообщения.');
+            else throw new InvalidInputException('Неправильный формат суммы.');
+        } else throw new InvalidInputException('Неправильный формат сообщения.');
     }
 
 }
