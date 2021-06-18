@@ -18,6 +18,7 @@ CREATE TABLE categories (
 
 CREATE TABLE category_aliases (
     id SERIAL PRIMARY KEY,
+    category_id INTEGER NOT NULL,
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
     alias VARCHAR
 );
@@ -26,6 +27,8 @@ CREATE TABLE expenses (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMP,
     amount NUMERIC(6, 2),
+    user_id INTEGER NOT NULL,
+    category_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
     note VARCHAR
