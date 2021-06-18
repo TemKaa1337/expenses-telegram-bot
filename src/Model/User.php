@@ -39,11 +39,11 @@ class User
         return $user[0]['id'];
     }
 
-    public function addExpense(float $amount, int $categoryId) : void
+    public function addExpense(float $amount, int $categoryId, ?string $note) : void
     {
-        $query = "INSERT INTO expenses (created_at, amount, user_id, category_id) VALUES (?, ?, ?, ?)";
+        $query = "INSERT INTO expenses (created_at, amount, user_id, category_id, note) VALUES (?, ?, ?, ?, ?)";
 
-        $this->db->execute($query, [date('Y-m-d H:i:s', strtotime('+3 hours')), $amount, $this->userId, $categoryId]);
+        $this->db->execute($query, [date('Y-m-d H:i:s'), $amount, $this->userId, $categoryId, $note]);
     }
 
     public function getMonthExpenses() : array
