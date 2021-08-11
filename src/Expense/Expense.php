@@ -49,7 +49,7 @@ class Expense
             $totalSumm += $expense['amount'];
         }
 
-        $avg = $totalSumm / (int)date('d');
+        $avg = number_format($totalSumm / (int)date('d'), 2);
         $result[] = "Итого {$avg}р. в среднем за день";
         $result[] = "Итого {$totalSumm}р.";
 
