@@ -49,6 +49,8 @@ class Expense
             $totalSumm += $expense['amount'];
         }
 
+        $avg = $totalSumm / (int)date('d');
+        $result[] = "Итого {$avg}р. в среднем за день";
         $result[] = "Итого {$totalSumm}р.";
 
         return implode(PHP_EOL, $result);
