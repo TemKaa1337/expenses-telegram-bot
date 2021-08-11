@@ -10,9 +10,11 @@ class ComposerStaticInit9f58fa5a2ec220778c3a7166c938e2b9
         'A' => 
         array (
             'App\\Model\\' => 10,
+            'App\\Log\\' => 8,
             'App\\Http\\' => 9,
             'App\\Helper\\' => 11,
             'App\\Expense\\' => 12,
+            'App\\Exception\\' => 14,
             'App\\Database\\' => 13,
             'App\\Config\\' => 11,
             'App\\Command\\' => 12,
@@ -25,6 +27,10 @@ class ComposerStaticInit9f58fa5a2ec220778c3a7166c938e2b9
         array (
             0 => __DIR__ . '/../..' . '/Model',
         ),
+        'App\\Log\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Log',
+        ),
         'App\\Http\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Http',
@@ -36,6 +42,10 @@ class ComposerStaticInit9f58fa5a2ec220778c3a7166c938e2b9
         'App\\Expense\\' => 
         array (
             0 => __DIR__ . '/../..' . '/Expense',
+        ),
+        'App\\Exception\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/Exception',
         ),
         'App\\Database\\' => 
         array (

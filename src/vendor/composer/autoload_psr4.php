@@ -7,9 +7,11 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Model\\' => array($baseDir . '/Model'),
+    'App\\Log\\' => array($baseDir . '/Log'),
     'App\\Http\\' => array($baseDir . '/Http'),
     'App\\Helper\\' => array($baseDir . '/Helper'),
     'App\\Expense\\' => array($baseDir . '/Expense'),
+    'App\\Exception\\' => array($baseDir . '/Exception'),
     'App\\Database\\' => array($baseDir . '/Database'),
     'App\\Config\\' => array($baseDir . '/Config'),
     'App\\Command\\' => array($baseDir . '/Command'),
