@@ -6,6 +6,8 @@ include('vendor/autoload.php');
 
 use App\Exception\InvalidCommandException;
 use App\Exception\InvalidInputException;
+use App\Exception\InvalidNewAliasException;
+use App\Exception\InvalidNewCategoryException;
 use App\Categories\Categories;
 use App\Database\Database;
 use App\Command\Command;
@@ -46,6 +48,10 @@ class App
         } catch (InvalidCommandException $e) {
             $response = new Response($request->getChatId());
             $response->sendResponse($e->getMessage());
+        } catch (InvalidNewCategoryException $e) {
+
+        } catch (InvalidNewAliasException $e) {
+
         } catch (Exception $e) {
             $db->execute('INSERT INTO exception_logging (stack_trace, message, file, line, created_at) VALUES (?, ?, ?, ?, ?)', [$e->getTraceAsString(), $e->getMessage(), $e->getFile(), $e->getLine(), date('Y-m-d H:i:s')]);
             $response = new Response($request->getChatId());

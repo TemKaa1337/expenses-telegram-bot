@@ -72,7 +72,7 @@ class Categories
             }
         }
 
-        throw new InvalidNewCategoryException();
+        throw new InvalidNewCategoryException('Неправильный формат добавления категории :(');
     }
 
     public function addCategoryAlias() : string
@@ -93,7 +93,7 @@ class Categories
             }
         }
 
-        throw new InvalidNewAliasException();
+        throw new InvalidNewAliasException('Неправильный формат добавления алиаса категории :(');
     }
 }
 
