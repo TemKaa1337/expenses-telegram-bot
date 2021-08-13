@@ -32,8 +32,8 @@ class Command
             $info = array_map('trim', explode(' ', $command));
 
             if (count($info) > 2) {
-                $command = $info[0];
-                $option = implode(' ', array_shift($info));
+                $command = array_shift($info);
+                $option = implode(' ', $info);
             } else {
                 [$command, $option] = $info;
             }
