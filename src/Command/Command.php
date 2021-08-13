@@ -59,7 +59,7 @@ class Command
                     $categories = new Categories('', new Database());
                     return $categories->getListOfAllAliases($this->user->getUserId());
                 case CommandPool::DELETE_CATEGORY:
-                    if ($this->option !== '' || $this->option < 3) {
+                    if ($this->option !== '') {
                         $categoryId = intval(str_replace(CommandPool::DELETE_CATEGORY, '', $this->command));
                         $category = new Categories($this->command, new Database());
     
