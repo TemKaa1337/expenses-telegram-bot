@@ -15,7 +15,7 @@ use App\Model\User;
 class Command
 {
     private string $command;
-    private string $option = '';
+    private string $option;
     private Expense $expense;
     private User $user;
 
@@ -29,7 +29,17 @@ class Command
     private function setCommandInfo(string $command) : void
     {
         if (strpos($command, ' ') !== false) {
-            [$this->command, $this->option] = array_map('trim', explode(' ', $command));
+            $info = array_map('trim', explode(' ', $command));
+
+            if (count($info) > 2) {
+                $command = $info[0];
+                $option = implode(' ', array_shift($info));
+            } else {
+                [$command, $option] = $info;
+            }
+
+            $this->command = $command;
+            $this->option = $option;
         } else {
             if (strpos($command, CommandPool::DELETE_CATEGORY) !== false)
                 [$this->command, $this->option] = [CommandPool::DELETE_CATEGORY, str_replace(CommandPool::DELETE_CATEGORY, '', $command)];
