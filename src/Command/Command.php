@@ -48,7 +48,7 @@ class Command
                         Helper::str($this->command)->startsWith('/delete_category') 
                         && strlen($this->command) <= 18
                     ) {
-                        $categoryId = intval(substr($this->command, -1));
+                        $categoryId = intval(str_replace(CommandPool::DELETE_CATEGORY, '', $this->command));
                         $category = new Categories($this->command, new Database());
 
                         if ($categoryId !== 0 && $category->isUserAllowedToDeleteCategory($this->user->getUserId(), $categoryId))
