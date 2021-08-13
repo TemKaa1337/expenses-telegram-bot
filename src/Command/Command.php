@@ -117,7 +117,7 @@ class Command
         $result[] = 'Для того, чтобы добавить категорию расходов, введите данные в формате: /add_category {CategoryName}.';
         $result[] = 'Пример: /add_category Бензин';
         $result[] = 'Для того, чтобы добавить алиас для категории расходов, введите данные в формате: /add_category_alias {CategoryName} {Alias}.';
-        $result[] = 'Пример: /add_category_alias Бензин бенз (важно, что слово, стоящее сразу после команды /add_category_alias, должно быть таким же по напиманию, как вы добавляли через /add_category)';
+        $result[] = 'Пример: /add_category_alias Бензин бенз (важно, что слово, стоящее сразу после команды /add_category_alias, должно быть таким же по написанию, как вы добавляли через /add_category)';
 
         return implode(PHP_EOL, $result);
     }
