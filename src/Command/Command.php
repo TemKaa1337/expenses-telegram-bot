@@ -15,7 +15,7 @@ use App\Model\User;
 class Command
 {
     private string $command;
-    private string $option;
+    private string $option = '';
     private Expense $expense;
     private User $user;
 
