@@ -59,8 +59,6 @@ class Command
                     $categories = new Categories('', new Database());
                     return $categories->getListOfAllAliases($this->user->getUserId());
                 case CommandPool::DELETE_CATEGORY:
-                    $this->option = str_replace(CommandPool::DELETE_CATEGORY, '', $this->command);
-
                     if ($this->option !== '' || $this->option < 3) {
                         $categoryId = intval(str_replace(CommandPool::DELETE_CATEGORY, '', $this->command));
                         $category = new Categories($this->command, new Database());
@@ -71,8 +69,6 @@ class Command
 
                     return 'Неправильный номер категории!';
                 case CommandPool::DELETE_EXPENSE:
-                    $this->option = str_replace(CommandPool::DELETE_EXPENSE, '', $this->command);
-
                     if ($this->option !== '') {
                         $expenseId = intval($this->option);
 
