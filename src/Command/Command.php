@@ -23,7 +23,7 @@ class Command
     {
         [$command, $option] = strpos($command, ' ') !== false ? explode(' ', $command) : [$command, ''];
         $this->command = trim($command);
-        $this->commandOption = trim($option);
+        $this->option = trim($option);
         $this->expense = $expense;
         $this->user = $user;
     }
