@@ -45,8 +45,18 @@ class Command
                     return $categories->getListOfAllAliases($this->user->getUserId());
                 default:
                     if (
-                        Helper::str($this->command)->startsWith('/delete') && 
-                        strlen($this->command) == 8
+                        Helper::str($this->command)->startsWith('/delete_category') 
+                        && strlen($this->command) == 17
+                    ) {
+                        $categoryId = intval(substr($this->command, -1));
+                        $category = new Categories($this->command, new Database());
+
+                        if ($categoryId !== 0 && $category->isUserAllowedToDeleteCategory($this->user->getUserId(), $categoryId))
+                            return $category->deleteCategory($categoryId);
+                        else return 'Неправильный номер категории!';
+                    } else if (
+                        Helper::str($this->command)->startsWith('/delete') 
+                        && strlen($this->command) == 8
                     ) {
                         $expenseId = intval(substr($this->command, -1));
 
@@ -56,13 +66,13 @@ class Command
                     } else if (Helper::str($this->command)->startsWith('/add_category_alias')) {
                         if (strpos($this->command, ' ') === false) return 'Не хватает параметров :(';
                         
-                        $categories = new Categories($this->command, new Database());
-                        return $categories->addCategoryAlias();
+                        $category = new Categories($this->command, new Database());
+                        return $category->addCategoryAlias();
                     } else if (Helper::str($this->command)->startsWith('/add_category')) {
                         if (strpos($this->command, ' ') === false) return 'Не хватает параметров :(';
 
-                        $categories = new Categories($this->command, new Database());
-                        return $categories->addCategory($this->user->getUserId());
+                        $category = new Categories($this->command, new Database());
+                        return $category->addCategory($this->user->getUserId());
                     } 
     
                     throw new InvalidCommandException('Такой команды не существует :(');

@@ -33,7 +33,7 @@ class Categories
 
     public function getListOfAllAliases(int $userId) : string
     {
-        $aliases = $this->db->execute('SELECT categories.category_name, category_aliases.alias FROM categories JOIN category_aliases ON categories.id = category_aliases.category_id WHERE categories.user_id = '.$userId.' OR user_id is NULL ORDER BY category_aliases.id', []);
+        $aliases = $this->db->execute('SELECT categories.id, categories.category_name, categories.user_id, category_aliases.alias FROM categories JOIN category_aliases ON categories.id = category_aliases.category_id WHERE categories.user_id = '.$userId.' OR user_id is NULL ORDER BY category_aliases.id', []);
 
         if (empty($aliases)) return 'На данный момент нет ни одной категории!';
 
@@ -41,10 +41,12 @@ class Categories
         $result = [];
 
         foreach ($aliases as $alias) {
-            if (isset($temp[$alias['category_name']]))
-                $temp[$alias['category_name']][] = $alias['alias'];
+            $name = isset($alias['user_id']) ? $alias['category_name'].' (/delete_category'.$alias['id'].')' : $alias['category_name'];
+
+            if (isset($temp[$name]))
+                $temp[$name][] = $alias['alias'];
             else
-                $temp[$alias['category_name']] = [$alias['alias']];
+                $temp[$name] = [$alias['alias']];
         }
 
         foreach ($temp as $name => $aliases) {
@@ -92,6 +94,23 @@ class Categories
         }
 
         throw new InvalidNewAliasException('Неправильный формат добавления алиаса категории :(');
+    }
+
+    public function deleteCategory(int $categoryId) : string
+    {
+        $this->db->execute('DELETE FROM categories WHERE id = ?', [$categoryId]);
+        $this->db->execute('DELETE FROM category_aliases WHERE category_id = ?', [$categoryId]);
+
+        return 'Категория успешно удалена!';
+    }
+
+    public function isUserAllowedToDeleteCategory(int $userId, int $categoryId) : bool
+    {
+        $isAllowed = $this->db->execute('SELECT user_id FROM categories WHERE id = ?', [$categoryId]);
+
+        if (empty($isAllowed)) return false;
+
+        return $isAllowed[0]['user_id'] === $userId;
     }
 }
 
