@@ -15,12 +15,15 @@ use App\Model\User;
 class Command
 {
     private string $command;
+    private string $option;
     private Expense $expense;
     private User $user;
 
     public function __construct(string $command, Expense $expense, User $user)
     {
-        $this->command = $command;
+        [$command, $option] = strpos($command, ' ') !== false ? explode(' ', $command) : [$command, ''];
+        $this->command = trim($command);
+        $this->commandOption = trim($option);
         $this->expense = $expense;
         $this->user = $user;
     }
@@ -43,41 +46,43 @@ class Command
                 case CommandPool::ALIASES:
                     $categories = new Categories('', new Database());
                     return $categories->getListOfAllAliases($this->user->getUserId());
-                default:
-                    if (
-                        Helper::str($this->command)->startsWith('/delete_category') 
-                        && strlen($this->command) <= 18
-                    ) {
+                case CommandPool::DELETE_CATEGORY:
+                    $this->option = str_replace(CommandPool::DELETE_CATEGORY, '', $this->command);
+
+                    if ($this->option !== '' || $this->option < 3) {
                         $categoryId = intval(str_replace(CommandPool::DELETE_CATEGORY, '', $this->command));
                         $category = new Categories($this->command, new Database());
-
+    
                         if ($categoryId !== 0 && $category->isUserAllowedToDeleteCategory($this->user->getUserId(), $categoryId))
                             return $category->deleteCategory($categoryId);
-                        else return 'Неправильный номер категории!';
-                    } else if (
-                        Helper::str($this->command)->startsWith('/delete') 
-                        && strlen($this->command) == 8
-                    ) {
-                        $expenseId = intval(substr($this->command, -1));
+                    }
+
+                    return 'Неправильный номер категории!';
+                case CommandPool::DELETE_EXPENSE:
+                    $this->option = str_replace(CommandPool::DELETE_EXPENSE, '', $this->command);
+
+                    if ($this->option !== '') {
+                        $expenseId = intval($this->option);
 
                         if ($expenseId !== 0 && $this->expense->isUserAllowedToDeleteExpense($expenseId))
                             return $this->expense->deleteExpense($expenseId);
-                        else return 'Неправильный номер траты!';
-                    } else if (Helper::str($this->command)->startsWith('/add_category_alias')) {
-                        if (strpos($this->command, ' ') === false) return 'Не хватает параметров :(';
-                        
-                        $category = new Categories($this->command, new Database());
-                        return $category->addCategoryAlias();
-                    } else if (Helper::str($this->command)->startsWith('/add_category')) {
-                        if (strpos($this->command, ' ') === false) return 'Не хватает параметров :(';
+                    }
 
+                    return 'Неправильный номер траты!';
+                case CommandPool::ADD_CATEGORY_ALIAS:
+                    if ($this->option !== '') {
+                        $category = new Categories($this->command.' '.$this->option, new Database());
+                        return $category->addCategoryAlias();
+                    } else return 'Не хватает параметров :(';
+                case CommandPool::ADD_CATEGORY:
+                    if ($this->option !== '') {
                         $category = new Categories($this->command, new Database());
                         return $category->addCategory($this->user->getUserId());
-                    } 
-    
-                    throw new InvalidCommandException('Такой команды не существует :(');
+                    } else return 'Не хватает параметров :(';
             }
         } else return $this->expense->addExpense();
+
+        throw new InvalidCommandException('Такой команды не существует или она введена неверно :(');
     }
 
     public function getAllCommandDescriptions() : string
