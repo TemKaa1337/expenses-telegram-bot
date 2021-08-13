@@ -60,10 +60,8 @@ class Categories
             $message = explode(' ', $this->message);
 
             if (count($message) === 2 && !empty($message[1])) {
-                $query = 'INSERT INTO categories (category_name, user_id) VALUES (?, ?)';
-                $this->db->execute($query, [$message[1], $userId]);
-
-                $categoryId = $this->getCategoryId();
+                $query = 'INSERT INTO categories (category_name, user_id) VALUES (?, ?) RETURNING id';
+                $categoryId = $this->db->execute($query, [$message[1], $userId])[0]['id'];
                 
                 $query = 'INSERT INTO category_aliases(category_id, alias) VALUES (?, ?)';
                 $this->db->execute($query, [$categoryId, $message[1]]);

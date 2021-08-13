@@ -13,6 +13,7 @@ class CommandPool
     const ALIASES = '/aliases';
     const ADD_CATEGORY = '/add_category';
     const ADD_CATEGORY_ALIAS = '/add_category_alias';
+    const DELETE_CATEGORY = '/delete_category';
 
     const COMMAND_DESCRIPTIONS = [
         self::START => 'Покажет весь доступный функционал.',
@@ -22,7 +23,8 @@ class CommandPool
         self::DELETE_EXPENSE => 'Позволит удалить трату, в начале каждой траты указывается какой командой это можно сделать',
         self::ALIASES => 'Выводит список алиасов для каждого раздела',
         self::ADD_CATEGORY => 'Добавляет новую категорию трат',
-        self::ADD_CATEGORY_ALIAS => 'Добавляет псевдоним существующей категории'
+        self::ADD_CATEGORY_ALIAS => 'Добавляет псевдоним существующей категории',
+        self::DELETE_CATEGORY => 'Удаляет существующую категорию'
     ];
 }
 
