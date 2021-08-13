@@ -17,6 +17,8 @@ class Request
         $input = file_get_contents('php://input'); 
         $input = json_decode($input, true);
 
+        if (!isset($input['message'])) die();
+        
         $this->input = $input;
         $this->chatId = $input['message']['chat']['id'];
         $this->userId = $input['message']['from']['id'];
