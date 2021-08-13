@@ -46,9 +46,10 @@ class User
         $this->db->execute($query, [date('Y-m-d H:i:s'), $amount, $this->userId, $categoryId, $note]);
     }
 
-    public function getMonthExpenses() : array
+    public function getMonthExpenses(bool $groupBy) : array
     {
-        $query = "SELECT expenses.*, categories.category_name FROM expenses JOIN categories ON expenses.category_id = categories.id WHERE expenses.user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) order by expenses.id asc";
+        $whereQuery = $groupBy ? 'GROUP BY category_name, expenses.id ORDER BY category_name asc' : 'ORDER BY expenses.id asc';
+        $query = "SELECT expenses.*, categories.category_name FROM expenses JOIN categories ON expenses.category_id = categories.id WHERE expenses.user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) {$whereQuery}";
         return $this->db->execute($query, [$this->userId]);
     }
 

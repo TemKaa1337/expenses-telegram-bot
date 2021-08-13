@@ -63,7 +63,7 @@ class Command
             switch ($this->command) {
                 case CommandPool::START: return $this->getAllCommandDescriptions();
                 case CommandPool::DAY_EXPENSES: return $this->expense->getDayExpenses();
-                case CommandPool::MONTH_EXPENSES: return $this->expense->getMonthExpenses(); 
+                case CommandPool::MONTH_EXPENSES: return $this->expense->getMonthExpenses($this->option === '-g'); 
                 case CommandPool::PREVIOUS_MONTH_EXPENSES: return $this->expense->getPreviousMonthExpenses();
                 case CommandPool::ALIASES:
                     $categories = new Categories('', new Database());
