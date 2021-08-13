@@ -21,11 +21,23 @@ class Command
 
     public function __construct(string $command, Expense $expense, User $user)
     {
-        [$command, $option] = strpos($command, ' ') !== false ? explode(' ', $command) : [$command, ''];
-        $this->command = trim(preg_replace('/[0-9]+/', '', $command));
-        $this->option = trim($option);
+        $this->setCommandInfo($command);
         $this->expense = $expense;
         $this->user = $user;
+    }
+
+    private function setCommandInfo(string $command) : void
+    {
+        if (strpos($command, ' ') !== false) {
+            [$this->command, $this->option] = array_map('trim', explode(' ', $command));
+        } else {
+            if (strpos($command, CommandPool::DELETE_CATEGORY) !== false)
+                [$this->command, $this->option] = [CommandPool::DELETE_CATEGORY, str_replace(CommandPool::DELETE_CATEGORY, '', $command)];
+            else if (strpos($command, CommandPool::DELETE_EXPENSE) !== false)
+                [$this->command, $this->option] = [CommandPool::DELETE_EXPENSE, str_replace(CommandPool::DELETE_EXPENSE, '', $command)];
+            else
+                [$this->command, $this->option] = [$command, ''];
+        }
     }
 
     public function isCommand() : bool
