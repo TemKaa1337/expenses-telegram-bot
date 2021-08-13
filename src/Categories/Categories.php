@@ -29,9 +29,9 @@ class Categories
         return $this->db->execute('SELECT id FROM categories where category_name = ?', ['Другое'])[0]['id'];
     }
 
-    public function getListOfAllAliases() : string
+    public function getListOfAllAliases(int $userId) : string
     {
-        $aliases = $this->db->execute('SELECT categories.category_name, category_aliases.alias FROM categories JOIN category_aliases ON categories.id = category_aliases.category_id ORDER BY category_aliases.id', []);
+        $aliases = $this->db->execute('SELECT categories.category_name, category_aliases.alias FROM categories JOIN category_aliases ON categories.id = category_aliases.category_id WHERE categories.user_id = '.$userId.' OR user_id is NULL ORDER BY category_aliases.id', []);
 
         if (empty($aliases)) return 'На данный момент нет ни одной категории!';
 

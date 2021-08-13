@@ -21,7 +21,8 @@ CREATE TABLE log (
 
 CREATE TABLE categories (
     id SERIAL PRIMARY KEY,
-    category_name VARCHAR UNIQUE
+    category_name VARCHAR UNIQUE,
+    user_id INTEGER
 );
 
 CREATE TABLE category_aliases (

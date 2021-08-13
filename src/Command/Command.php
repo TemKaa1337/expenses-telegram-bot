@@ -28,7 +28,7 @@ class Command
         return Helper::str($this->command)->startsWith('/');
     }
 
-    public function handle() : string
+    public function handle(int $userId) : string
     {
         $isCommand = $this->isCommand();
 
@@ -40,7 +40,7 @@ class Command
                 case CommandPool::PREVIOUS_MONTH_EXPENSES: return $this->expense->getPreviousMonthExpenses();
                 case CommandPool::ALIASES:
                     $categories = new Categories('', new Database());
-                    return $categories->getListOfAllAliases();
+                    return $categories->getListOfAllAliases($userId);
                 default:
                     if (
                         Helper::str($this->command)->startsWith('/delete') && 
