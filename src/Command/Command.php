@@ -46,7 +46,7 @@ class Command
                 default:
                     if (
                         Helper::str($this->command)->startsWith('/delete_category') 
-                        && strlen($this->command) == 17
+                        && strlen($this->command) <= 18
                     ) {
                         $categoryId = intval(substr($this->command, -1));
                         $category = new Categories($this->command, new Database());
