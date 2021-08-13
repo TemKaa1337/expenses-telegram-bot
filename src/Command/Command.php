@@ -76,7 +76,7 @@ class Command
                     } else return 'Не хватает параметров :(';
                 case CommandPool::ADD_CATEGORY:
                     if ($this->option !== '') {
-                        $category = new Categories($this->command, new Database());
+                        $category = new Categories($this->command.' '.$this->option, new Database());
                         return $category->addCategory($this->user->getUserId());
                     } else return 'Не хватает параметров :(';
             }
