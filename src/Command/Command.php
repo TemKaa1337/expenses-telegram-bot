@@ -22,7 +22,7 @@ class Command
     public function __construct(string $command, Expense $expense, User $user)
     {
         [$command, $option] = strpos($command, ' ') !== false ? explode(' ', $command) : [$command, ''];
-        $this->command = trim($command);
+        $this->command = trim(preg_replace('/[0-9]+/', '', $command));
         $this->option = trim($option);
         $this->expense = $expense;
         $this->user = $user;
