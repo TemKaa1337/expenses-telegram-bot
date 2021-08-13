@@ -53,10 +53,14 @@ class Command
                         if ($expenseId !== 0 && $this->expense->isUserAllowedToDeleteExpense($expenseId))
                             return $this->expense->deleteExpense($expenseId);
                         else return 'Неправильный номер траты!';
-                    } else if (Helper::str($this->command)->startsWith('/add_category ')) {
+                    } else if (Helper::str($this->command)->startsWith('/add_category')) {
+                        if (strpos($this->command, ' ') === false) return 'Не хватает параметров :(';
+
                         $categories = new Categories($this->command, new Database());
                         return $categories->addCategory($this->user->getUserId());
-                    } else if (Helper::str($this->command)->startsWith('/add_category_alias ')) {
+                    } else if (Helper::str($this->command)->startsWith('/add_category_alias')) {
+                        if (strpos($this->command, ' ') === false) return 'Не хватает параметров :(';
+                        
                         $categories = new Categories($this->command, new Database());
                         return $categories->addCategoryAlias();
                     }
