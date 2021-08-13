@@ -2,6 +2,8 @@
 
 namespace App\Categories;
 
+use App\Exception\InvalidNewCategoryException;
+use App\Exception\InvalidNewAliasException;
 use App\Database\Database;
 
 class Categories
@@ -50,6 +52,48 @@ class Categories
         }
 
         return implode(PHP_EOL, $result);
+    }
+
+    public function addCategory(int $userId) : string
+    {
+        if (strpos($this->message, ' ') !== false) {
+            $message = explode(' ', $this->message);
+
+            if (count($message) === 2 && !empty($message[1])) {
+                $query = 'INSERT INTO categories (category_name, user_id) VALUES (?, ?)';
+                $this->db->execute($query, [$message[1], $userId]);
+
+                $categoryId = $this->getCategoryId();
+                
+                $query = 'INSERT INTO category_aliases(category_id, alias) VALUES (?, ?)';
+                $this->db->execute($query, [$categoryId, $message[1]]);
+        
+                return 'Новая категория успешно добавлена!';
+            }
+        }
+
+        throw new InvalidNewCategoryException();
+    }
+
+    public function addCategoryAlias() : string
+    {
+        if (strpos($this->message, ' ') !== false) {
+            $message = explode(' ', $this->message);
+
+            if (
+                count($message) === 3 
+                && !empty($message[1]) 
+                && !empty($message[2])
+            ) {
+                $categoryId = $this->getCategoryId();
+                $query = 'INSERT INTO category_aliases(category_id, alias) VALUES (?, ?)';
+                $this->db->execute($query, [$categoryId, $message[2]]);
+        
+                return 'Алиас для категории успешно добавлен!';
+            }
+        }
+
+        throw new InvalidNewAliasException();
     }
 }
 

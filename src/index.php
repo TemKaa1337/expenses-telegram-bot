@@ -34,8 +34,8 @@ class App
 
             $expense = new Expense($user, $db, $categoryId, $request->getMessage());
 
-            $command = new Command($request->getMessage(), $expense);
-            $responseMessage = $command->handle($user->getUserId());
+            $command = new Command($request->getMessage(), $expense, $user);
+            $responseMessage = $command->handle();
             
             $response = new Response($request->getChatId());
             $response->sendResponse($responseMessage);
