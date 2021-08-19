@@ -34,9 +34,9 @@ class Expense
         return 'Новая трата добавлена успешно!';
     }
 
-    public function getMonthExpenses(bool $groupBy) : string
+    public function getMonthExpenses(string $arguments) : string
     {
-        $expenses = $this->user->getMonthExpenses($groupBy);
+        $expenses = $this->user->getMonthExpenses($arguments);
 
         if (empty($expenses)) return 'В этом месяце еще не было трат!';
 
