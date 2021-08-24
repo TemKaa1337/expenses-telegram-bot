@@ -62,6 +62,7 @@ class Expense
 
         if (empty($expenses)) return 'В этом месяце еще не было трат!';
 
+        $total = 0;
         $result = [];
         $output = [];
 
@@ -76,7 +77,11 @@ class Expense
         foreach ($result as $category => $value) {
             $amount = number_format($value, 2);
             $output[] = "{$category}: {$amount}р.";
+
+            $total += $amount;
         }
+
+        $output[] = "Итого: {$total}р.";
 
         return implode(PHP_EOL, $output);
     }
