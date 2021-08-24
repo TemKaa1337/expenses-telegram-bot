@@ -67,9 +67,9 @@ class Expense
 
         foreach ($expenses as $expense) {
             if (isset($result[$expense['category_name']])) {
-                $result[$expense['category_name']] += $expense['amount'];
+                $result[$expense['category_name']] += (float)$expense['amount'];
             } else {
-                $result[$expense['category_name']] = $expense['amount'];
+                $result[$expense['category_name']] = (float)$expense['amount'];
             }
         }
 
