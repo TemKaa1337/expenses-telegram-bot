@@ -14,6 +14,7 @@ class CommandPool
     const ADD_CATEGORY = '/add_category';
     const ADD_CATEGORY_ALIAS = '/add_category_alias';
     const DELETE_CATEGORY = '/delete_category';
+    const MONTH_EXPENSES_BY_CATEGORY = '/month_expenses_by_category';
 
     const COMMAND_DESCRIPTIONS = [
         self::START => 'Покажет весь доступный функционал.',
@@ -24,7 +25,8 @@ class CommandPool
         self::ALIASES => 'Выводит список алиасов для каждого раздела',
         self::ADD_CATEGORY => 'Добавляет новую категорию трат',
         self::ADD_CATEGORY_ALIAS => 'Добавляет псевдоним существующей категории',
-        self::DELETE_CATEGORY => 'Позволит удалить категорию, в начале каждой траты указывается какой командой это можно сделать (если не указано - значит удалить нельзя)'
+        self::DELETE_CATEGORY => 'Позволит удалить категорию, в начале каждой траты указывается какой командой это можно сделать (если не указано - значит удалить нельзя)',
+        self::MONTH_EXPENSES_BY_CATEGORY => 'Позволяет просмотреть общую сумму трат по каждой категории'
     ];
 }
 

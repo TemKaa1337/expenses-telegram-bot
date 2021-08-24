@@ -56,6 +56,31 @@ class Expense
         return implode(PHP_EOL, $result);
     }
 
+    public function getMonthExpensesByCategory(string $arguments) : string
+    {
+        $expenses = $this->user->getMonthExpensesByCategory($arguments);
+
+        if (empty($expenses)) return 'В этом месяце еще не было трат!';
+
+        $result = [];
+        $output = [];
+
+        foreach ($expenses as $expense) {
+            if (isset($result[$expense['category_name']])) {
+                $result[$expense['category_name']] += $expense['amount'];
+            } else {
+                $result[$expense['category_name']] = $expense['amount'];
+            }
+        }
+
+        foreach ($result as $category => $value) {
+            $amount = number_format($value, 2);
+            $output[] = "{$category}: {$amount}р.";
+        }
+
+        return implode(PHP_EOL, $output);
+    }
+
     public function getDayExpenses() : string
     {
         $expenses = $this->user->getDayExpenses();
