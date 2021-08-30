@@ -52,6 +52,11 @@ CREATE TABLE exception_logging (
     created_at TIMESTAMP
 );
 
+CREATE TABLE response_logging (
+    id SERIAL PRIMARY KEY,
+    response json 
+);
+
 INSERT INTO categories(category_name) values ('Продукты'), ('Кафе'), ('Такси'), ('Steam'), ('Dota2Market'), ('Warzone'), ('Макдоналдс'), ('Одежда'), ('Хостинг и домен'), ('Другое'), ('Компьютерные комплектующие'), ('Шаурма'), ('Хотфикс'), ('Бухич'), ('Коммуналка и тд'), ('Платная стоянка');
 
 INSERT INTO category_aliases(category_id, alias) values (1, 'еда');

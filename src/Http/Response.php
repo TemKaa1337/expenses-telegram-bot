@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Http;
 
+use App\Database\Database;
 use App\Config\BotConfig;
 
 class Response
@@ -33,6 +34,11 @@ class Response
         curl_close($curl); 
           
         return $response;
+    }
+
+    public function logResponse(Database $db, array $response): void
+    {
+        $db->execute('INSET INTO response_logging (response) VALUES (?)', [json_encode($response)]);
     }
 }
 

@@ -40,25 +40,27 @@ class App
             $responseMessage = $command->handle();
             
             $response = new Response($request->getChatId());
-            $response->sendResponse($responseMessage);
+            $responseInfo = $response->sendResponse($responseMessage);
 
         } catch (InvalidInputException $e) {
             $response = new Response($request->getChatId());
-            $response->sendResponse($e->getMessage());
+            $responseInfo = $response->sendResponse($e->getMessage());
         } catch (InvalidCommandException $e) {
             $response = new Response($request->getChatId());
-            $response->sendResponse($e->getMessage());
+            $responseInfo = $response->sendResponse($e->getMessage());
         } catch (InvalidNewCategoryException $e) {
             $response = new Response($request->getChatId());
-            $response->sendResponse($e->getMessage());
+            $responseInfo = $response->sendResponse($e->getMessage());
         } catch (InvalidNewAliasException $e) {
             $response = new Response($request->getChatId());
-            $response->sendResponse($e->getMessage());
+            $responseInfo = $response->sendResponse($e->getMessage());
         } catch (Exception $e) {
             $db->execute('INSERT INTO exception_logging (stack_trace, message, file, line, created_at) VALUES (?, ?, ?, ?, ?)', [$e->getTraceAsString(), $e->getMessage(), $e->getFile(), $e->getLine(), date('Y-m-d H:i:s')]);
             $response = new Response($request->getChatId());
-            $response->sendResponse('Случилась неизвестная ошибка, надо чекать логи((');
+            $responseInfo = $response->sendResponse('Случилась неизвестная ошибка, надо чекать логи((');
         }
+
+        $response->logResponse($db, $responseInfo);
     }
 }
 
