@@ -21,6 +21,19 @@ class Response
     {
         $key = $this->config->getBotKey();
         $curl = curl_init(); 
+        $messageLength = strlen($message);
+
+        if ($messageLength > 4096) {
+            $result = [];
+            $max = (int) ($messageLength / 4096);
+
+            for ($i = 0; $i < $max; $i ++) {
+                $result[] = $this->sendResponse(substr($message, $i * 4096, 4096));
+            }
+
+            return $result;
+        }
+
         $data = ['chat_id' => $this->chatId, 'text' => $message];
           
         curl_setopt($curl, CURLOPT_URL, "https://api.telegram.org/bot{$key}/{$method}");
