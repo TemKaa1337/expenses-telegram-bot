@@ -23,12 +23,12 @@ class Response
         $curl = curl_init(); 
         $messageLength = strlen($message);
 
-        if ($messageLength > 80192) {
+        if ($messageLength > 4096) {
             $result = [];
-            $max = (int) ($messageLength / 80192);
+            $max = (int) ($messageLength / 4096);
 
-            for ($i = 0; $i < $max; $i ++) {
-                $result[] = $this->sendResponse(substr($message, $i * 80192, 80192));
+            for ($i = 0; $i < $max + 1; $i ++) {
+                $result[] = $this->sendResponse(substr($message, $i * 4096, 4096));
             }
 
             return $result;
