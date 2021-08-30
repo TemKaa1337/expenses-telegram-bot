@@ -54,6 +54,7 @@ CREATE TABLE exception_logging (
 
 CREATE TABLE response_logging (
     id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP,
     response json 
 );
 
