@@ -38,7 +38,7 @@ class Response
 
     public function logResponse(Database $db, array $response): void
     {
-        $db->execute('INSET INTO response_logging (response) VALUES (?)', [json_encode($response)]);
+        $db->execute('INSERT INTO response_logging (response) VALUES (?)', [json_encode($response)]);
     }
 }
 
