@@ -65,7 +65,7 @@ class Command
                 case CommandPool::DAY_EXPENSES: return $this->expense->getDayExpenses();
                 case CommandPool::MONTH_EXPENSES: return $this->expense->getMonthExpenses($this->option); 
                 case CommandPool::MONTH_EXPENSES_BY_CATEGORY: return $this->expense->getMonthExpensesByCategory($this->option);
-                case CommandPool::PREVIOUS_MONTH_EXPENSES: return $this->expense->getPreviousMonthExpenses();
+                case CommandPool::PREVIOUS_MONTH_EXPENSES: return $this->expense->getPreviousMonthExpenses($this->option);
                 case CommandPool::ALIASES:
                     $categories = new Categories('', new Database());
                     return $categories->getListOfAllAliases($this->user->getUserId());

@@ -74,9 +74,13 @@ class User
         return $this->db->execute($query, [$this->userId]);
     }
 
-    public function getPreviousMonthExpenses() : array
+    public function getPreviousMonthExpenses(string $arguments) : array
     {
-        $query = "SELECT expenses.*, categories.category_name FROM expenses JOIN categories ON expenses.category_id = categories.id WHERE expenses.user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date - INTERVAL '1 MONTH') AND date_trunc('year', created_at) = date_trunc('year', NOW()::date - INTERVAL '1 MONTH') order by expenses.id asc";
+        $showFlag = strpos($arguments, '-s') !== false;
+
+        $showQuery = $showFlag ? '' : "AND categories.category_name not in ('CyberShoke', 'Steam')";
+
+        $query = "SELECT expenses.*, categories.category_name FROM expenses JOIN categories ON expenses.category_id = categories.id WHERE expenses.user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date - INTERVAL '1 MONTH') AND date_trunc('year', created_at) = date_trunc('year', NOW()::date - INTERVAL '1 MONTH') {$showQuery} order by expenses.id asc";
         return $this->db->execute($query, [$this->userId]);
     }
 

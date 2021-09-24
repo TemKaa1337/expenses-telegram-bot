@@ -106,9 +106,9 @@ class Expense
         return implode(PHP_EOL, $result);
     }
 
-    public function getPreviousMonthExpenses() : string
+    public function getPreviousMonthExpenses(string $arguments) : string
     {
-        $expenses = $this->user->getPreviousMonthExpenses();
+        $expenses = $this->user->getPreviousMonthExpenses($arguments);
         
         if (empty($expenses)) return 'В прошлом месяце не было трат!';
 
