@@ -75,12 +75,12 @@ class Expense
         }
 
         foreach ($result as $category => $value) {
-            $amount = number_format($value, 2);
-            $output[] = "{$category}: {$amount}р.";
+            $output[] = "{$category}: {$value}р.";
 
-            $total += $amount;
+            $total += $value;
         }
 
+        $total = round($total, 2);
         $output[] = "Итого: {$total}р.";
 
         return implode(PHP_EOL, $output);
