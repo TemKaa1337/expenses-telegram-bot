@@ -28,7 +28,7 @@ class User
 
     public function createUser(string $firstName) : void
     {
-        $query = 'INSERT INTO users (telegram_id, first_name, second_name) VALUES (?, ?, ?)';
+        $query = 'INSERT INTO users (telegram_id, first_name) VALUES (?, ?)';
 
         $this->db->execute($query, [$this->requestUserId, $firstName]);
     }
