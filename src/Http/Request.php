@@ -9,7 +9,6 @@ class Request
     public int $userId;
     public string $message;
     public string $firstName;
-    public string $secondName;
     public array $input;
 
     public function __construct()
@@ -24,7 +23,6 @@ class Request
         $this->userId = $input['message']['from']['id'];
         $this->message = $this->formatMessage($input['message']['text']);
         $this->firstName = $input['message']['from']['first_name'];
-        $this->secondName = $input['message']['from']['last_name'];
     }
 
     public function getChatId() : int
@@ -45,11 +43,6 @@ class Request
     public function getFirstName() : string
     {
         return $this->firstName;
-    }
-
-    public function getSecondName() : string
-    {
-        return $this->secondName;
     }
 
     public function getInput() : array

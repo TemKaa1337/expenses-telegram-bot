@@ -20,17 +20,17 @@ class User
         $isUserExist = $this->db->execute('SELECT id FROM users WHERE telegram_id = ?', [$this->requestUserId]);
 
         if (empty($isUserExist)) {
-            $this->createUser($request->getFirstName(), $request->getSecondName());
+            $this->createUser($request->getFirstName());
         }
 
         $this->userId = $this->setUserId();
     }
 
-    public function createUser(string $firstName, string $secondName) : void
+    public function createUser(string $firstName) : void
     {
         $query = 'INSERT INTO users (telegram_id, first_name, second_name) VALUES (?, ?, ?)';
 
-        $this->db->execute($query, [$this->requestUserId, $firstName, $secondName]);
+        $this->db->execute($query, [$this->requestUserId, $firstName]);
     }
 
     private function setUserId() : int
