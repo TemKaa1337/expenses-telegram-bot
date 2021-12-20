@@ -21,7 +21,7 @@ class Response
     {
         $key = $this->config->getBotKey();
         $curl = curl_init(); 
-        $messageLength = strlen($message);
+        $messageLength = mb_strlen($message);
 
         if ($messageLength > 4096) {
             $result = [];
