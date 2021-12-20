@@ -41,7 +41,6 @@ class Response
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-        throw new \Exception($data['message']);
         // curl_setopt($curl, CURLOPT_HEADER, ['Content-Type: application/json']);
         // curl_setopt($curl, CURLOPT_HEADER, ['Content-Length: '.strlen(json_encode($data))]);
         // curl_setopt($curl, CURLOPT_HEADER, ['charset="utf-8"']);
