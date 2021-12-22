@@ -160,7 +160,7 @@ class Expense
     public function getTotalMonthsExpenses(string $arguments): string
     {
         $result = [];
-        $where = strpos($arguments, '-s') !== false ? 'expenses.user_id = ?' : '';
+        $where = strpos($arguments, '-s') !== false ? " AND categories.category_name != 'Steam'" : "";
         $expenses = $this->db->execute("
             select 
                 extract(month from expenses.created_at) as month, 
@@ -168,6 +168,7 @@ class Expense
                 sum(expenses.amount) 
             from expenses 
             join categories on expenses.category_id = categories.id 
+            where expenses.user_id = ?
             $where 
             group by 
                 extract(month from expenses.created_at), 
@@ -175,7 +176,7 @@ class Expense
             order by 
                 year, 
                 month desc;
-        ", $where !== '' ? [$this->user->getUserId()] : []);
+        ", [$this->user->getUserId()]);
 
         if (empty($expenses)) return 'Трат не обнаружено!';
 
