@@ -126,6 +126,66 @@ class Expense
         return implode(PHP_EOL, $result);
     }
 
+    public function getAverageMonthExpensesByCategory(string $arguments): string
+    {
+        $result = [];
+        $average = [];
+        $expenses = $this->db->execute('
+            select 
+                categories.category_name, 
+                extract(month from expenses.created_at) as month, 
+                extract(year from expenses.created_at) as year, 
+                sum(expenses.amount) 
+            from expenses 
+            join categories on expenses.category_id = categories.id 
+            where expenses.user_id = ? 
+            group by 
+                extract(month from expenses.created_at), 
+                extract(year from expenses.created_at), 
+                categories.category_name 
+            order by
+                year, 
+                month desc;
+            ', [$this->user->getUserId()]);
+        
+        if (empty($expenses)) return 'Трат не обнаружено!';
+
+        foreach ($expenses as $expense) {
+            
+        }
+
+        return 'asd'; 
+    }
+
+    public function getTotalMonthsExpenses(string $arguments): string
+    {
+        $result = [];
+        $where = strpos($arguments, '-s') !== false ? 'expenses.user_id = ?' : '';
+        $expenses = $this->db->execute("
+        select 
+            extract(month from expenses.created_at) as month, 
+            extract(year from expenses.created_at) as year, 
+            sum(expenses.amount) 
+        from expenses 
+        join categories on expenses.category_id = categories.id 
+        $where 
+        group by 
+            extract(month from expenses.created_at), 
+            extract(year from expenses.created_at) 
+        order by 
+            year, 
+            month desc;
+        ", $where !== '' ? [$this->user->getUserId()] : []);
+
+        if (empty($expenses)) return 'Трат не обнаружено!';
+
+        foreach ($expenses as $expense) {
+            $result[] = "{$expense->month}.{$expense->year} - {$expense->sum}р.";
+        }
+
+        return implode(PHP_EOL, $result);
+    }
+
     public function deleteExpense(int $expenseId) : string
     {
         $this->user->deleteExpense($expenseId);

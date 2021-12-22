@@ -15,6 +15,8 @@ class CommandPool
     const ADD_CATEGORY_ALIAS = '/add_category_alias';
     const DELETE_CATEGORY = '/delete_category';
     const MONTH_EXPENSES_BY_CATEGORY = '/month_expenses_by_category';
+    const AVERAGE_MONTH_EXPENSES_BY_CATEGORY = '/average_month_expenses_by_category';
+    const TOTAL_MONTH_EXPENSES = '/total_month_expenses';
 
     const COMMAND_DESCRIPTIONS = [
         self::START => 'Покажет весь доступный функционал.',
@@ -26,7 +28,9 @@ class CommandPool
         self::ADD_CATEGORY => 'Добавляет новую категорию трат',
         self::ADD_CATEGORY_ALIAS => 'Добавляет псевдоним существующей категории',
         self::DELETE_CATEGORY => 'Позволит удалить категорию, в начале каждой траты указывается какой командой это можно сделать (если не указано - значит удалить нельзя)',
-        self::MONTH_EXPENSES_BY_CATEGORY => 'Позволяет просмотреть общую сумму трат по каждой категории'
+        self::MONTH_EXPENSES_BY_CATEGORY => 'Позволяет просмотреть общую сумму трат по каждой категории',
+        self::AVERAGE_MONTH_EXPENSES_BY_CATEGORY => 'Среднее значение расходов по каждой категории за каждый месяц',
+        self::TOTAL_MONTH_EXPENSES => 'Общее количество потраченных средств за каждый месяц'
     ];
 }
 
