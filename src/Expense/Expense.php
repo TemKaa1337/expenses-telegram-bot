@@ -131,7 +131,7 @@ class Expense
         $result = [];
         $average = [];
         $categories = [];
-        $where = strpos($arguments, '-s') !== false ? " AND categories.category_name != 'Steam'" : "";
+        $where = strpos($arguments, '-s') !== false ? "" : " AND categories.category_name != 'Steam' ";
         $expenses = $this->db->execute("
             select 
                 categories.category_name, 
@@ -182,7 +182,7 @@ class Expense
     public function getTotalMonthsExpenses(string $arguments): string
     {
         $result = [];
-        $where = strpos($arguments, '-s') !== false ? " AND categories.category_name != 'Steam'" : "";
+        $where = strpos($arguments, '-s') !== false ? "" : " AND categories.category_name != 'Steam' ";
         $expenses = $this->db->execute("
             select 
                 extract(month from expenses.created_at) as month, 
