@@ -130,7 +130,9 @@ class Expense
     {
         $result = [];
         $average = [];
-        $expenses = $this->db->execute('
+        $categories = [];
+        $where = strpos($arguments, '-s') !== false ? " AND categories.category_name != 'Steam'" : "";
+        $expenses = $this->db->execute("
             select 
                 categories.category_name, 
                 extract(month from expenses.created_at) as month, 
@@ -138,7 +140,7 @@ class Expense
                 sum(expenses.amount) 
             from expenses 
             join categories on expenses.category_id = categories.id 
-            where expenses.user_id = ? 
+            where expenses.user_id = ? $where 
             group by 
                 extract(month from expenses.created_at), 
                 extract(year from expenses.created_at), 
@@ -146,15 +148,35 @@ class Expense
             order by
                 year, 
                 month desc;
-        ', [$this->user->getUserId()]);
+        ", [$this->user->getUserId()]);
         
         if (empty($expenses)) return 'Трат не обнаружено!';
 
         foreach ($expenses as $expense) {
-            
+            if (!in_array($expense['category_name'], $categories))
+                $categories[] = $expense['category_name'];
+
+            $month = $expense['year'].'.'.$expense['month'];
+
+            if (isset($result[$month])) {
+                $result[$month][$expense['category_name']] = $expense['sum'];
+            } else {
+                $result[$month] = [$expense['category_name'] => $expense['sum']];
+            }
         }
 
-        return 'asd'; 
+        foreach ($categories as $category) {
+            $temp = [];
+            foreach ($result as $month => $monthExpenses) {
+                if (isset($monthExpenses[$category])) {
+                    $temp[] = $monthExpenses[$category].'р.';
+                } else $temp[] = '0р.';
+            }
+
+            $average[] = "$category: ".implode('|', $temp);
+        }
+
+        return implode(PHP_EOL, $average); 
     }
 
     public function getTotalMonthsExpenses(string $arguments): string
@@ -168,8 +190,7 @@ class Expense
                 sum(expenses.amount) 
             from expenses 
             join categories on expenses.category_id = categories.id 
-            where expenses.user_id = ?
-            $where 
+            where expenses.user_id = ? $where 
             group by 
                 extract(month from expenses.created_at), 
                 extract(year from expenses.created_at) 
