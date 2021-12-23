@@ -66,7 +66,7 @@ class Command
                 case CommandPool::MONTH_EXPENSES: return $this->expense->getMonthExpenses($this->option); 
                 case CommandPool::MONTH_EXPENSES_BY_CATEGORY: return $this->expense->getMonthExpensesByCategory($this->option);
                 case CommandPool::PREVIOUS_MONTH_EXPENSES: return $this->expense->getPreviousMonthExpenses($this->option);
-                case CommandPool::AVERAGE_MONTH_EXPENSES_BY_CATEGORY: return $this->expense->getAverageMonthExpensesByCategory($this->option);
+                case CommandPool::AVERAGE_EACH_MONTH_EXPENSES: return $this->expense->getAverageMonthExpensesByCategory($this->option);
                 case CommandPool::TOTAL_MONTH_EXPENSES: return $this->expense->getTotalMonthsExpenses($this->option);
                 case CommandPool::ALIASES:
                     $categories = new Categories('', new Database());
