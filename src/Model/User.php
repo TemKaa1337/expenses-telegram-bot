@@ -58,6 +58,18 @@ class User
         return $this->db->execute($query, [$this->userId]);
     }
 
+    public function getMonthExpensesFromDate(string $date, string $arguments) : array
+    {
+        $groupFlag = strpos($arguments, '-g') !== false;
+        $showFlag = strpos($arguments, '-s') !== false;
+
+        $whereQuery = $groupFlag ? 'GROUP BY category_name, expenses.id ORDER BY category_name asc' : 'ORDER BY expenses.id asc';
+        $showQuery = $showFlag ? " AND created_at >= '{$date}' " : " AND created_at >= '{$date}' AND categories.category_name not in ('CyberShoke', 'Steam')";
+        
+        $query = "SELECT expenses.*, categories.category_name FROM expenses JOIN categories ON expenses.category_id = categories.id WHERE expenses.user_id = ? AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) AND date_trunc('month', created_at) = date_trunc('month', NOW()::date) {$showQuery} {$whereQuery}";
+        return $this->db->execute($query, [$this->userId]);
+    }
+
     public function getMonthExpensesByCategory(string $arguments) : array
     {
         $showFlag = strpos($arguments, '-s') !== false;

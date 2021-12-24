@@ -208,6 +208,43 @@ class Expense
         return implode(PHP_EOL, $result);
     }
 
+    public function getMonthExpensesFromDate(string $arguments): string
+    {
+        if ($arguments === '') throw new InvalidInputException('Неправильный формат сообщения.');
+
+        $day = (int) $arguments;
+        $daysInMonth = cal_days_in_month(CAL_GREGORIAN, (int) date('m'), (int) date('Y'));
+
+        if ($day < 1 || $day > $daysInMonth) throw new InvalidInputException('Вы ввели неправильный день.');
+
+        $date = date('Y-m').$day.' 00:00:00';
+
+        if (strpos($arguments, ' ') !== false) {
+            $arguments = '';
+        } else {
+            $arguments = str_replace((string) $day, $arguments, '');
+        }
+        
+        $expenses = $this->user->getMonthExpensesFromDate($date, $arguments);
+
+        if (empty($expenses)) return 'В этом месяце еще не было трат!';
+
+        $result = [];
+        $totalSumm = 0;
+
+        foreach ($expenses as $expense) {
+            $result[] = date('d.m.Y H:i:s', strtotime($expense['created_at']))." (/delete{$expense['id']}) - {$expense['amount']}р, {$expense['category_name']}".$this->getNoteForOutput($expense['note']);
+
+            $totalSumm += $expense['amount'];
+        }
+
+        $avg = number_format($totalSumm / (int)date('d'), 2);
+        $result[] = "Итого {$avg}р. в среднем за день";
+        $result[] = "Итого {$totalSumm}р.";
+
+        return implode(PHP_EOL, $result);
+    }
+
     public function deleteExpense(int $expenseId) : string
     {
         $this->user->deleteExpense($expenseId);
