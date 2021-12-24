@@ -217,14 +217,14 @@ class Expense
 
         if ($day < 1 || $day > $daysInMonth) throw new InvalidInputException('Вы ввели неправильный день.');
 
-        $date = date('Y-m').$day.' 00:00:00';
+        $date = date('Y-m').'-'.$day.' 00:00:00';
 
         if (strpos($arguments, ' ') !== false) {
             $arguments = '';
         } else {
             $arguments = str_replace((string) $day, $arguments, '');
         }
-        
+
         $expenses = $this->user->getMonthExpensesFromDate($date, $arguments);
 
         if (empty($expenses)) return 'В этом месяце еще не было трат!';

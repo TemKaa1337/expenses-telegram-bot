@@ -32,7 +32,7 @@ class CommandPool
         self::MONTH_EXPENSES_BY_CATEGORY => 'Позволяет просмотреть общую сумму трат по каждой категории',
         self::AVERAGE_EACH_MONTH_EXPENSES => 'Среднее значение расходов по каждой категории за каждый месяц',
         self::TOTAL_MONTH_EXPENSES => 'Общее количество потраченных средств за каждый месяц',
-        self::MONTH_EXPENSES_FROM_DATE => 'Ващи траты за текущий месяц начиная с указанной даты'
+        self::MONTH_EXPENSES_FROM_DATE => 'Ваши траты за текущий месяц начиная с указанной даты'
     ];
 }
 
