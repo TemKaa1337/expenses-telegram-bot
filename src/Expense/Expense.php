@@ -146,7 +146,7 @@ class Expense
                 extract(year from expenses.created_at), 
                 categories.category_name 
             order by
-                year, 
+                year desc, 
                 month desc;
         ", [$this->user->getUserId()]);
         
@@ -195,10 +195,10 @@ class Expense
                 extract(month from expenses.created_at), 
                 extract(year from expenses.created_at) 
             order by 
-                year, 
+                year desc, 
                 month desc;
         ", [$this->user->getUserId()]);
-
+        
         if (empty($expenses)) return 'Трат не обнаружено!';
 
         foreach ($expenses as $expense) {
