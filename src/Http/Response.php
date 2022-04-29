@@ -28,7 +28,7 @@ class Response
             $max = (int) ($messageLength / 4096);
 
             for ($i = 0; $i < $max + 1; $i ++) {
-                $result[] = $this->sendResponse(substr($message, $i * 4096, 4096));
+                $result[] = $this->sendResponse(mb_substr($message, $i * 4096, 4096));
             }
 
             return $result;
