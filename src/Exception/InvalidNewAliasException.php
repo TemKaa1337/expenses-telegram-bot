@@ -3,9 +3,7 @@ declare(strict_types = 1);
 
 namespace App\Exception;
 
-use Exception;
-
-class InvalidNewAliasException extends Exception
+class InvalidNewAliasException extends \Exception
 {
 
 }

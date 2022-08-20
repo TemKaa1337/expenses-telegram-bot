@@ -3,48 +3,27 @@ declare(strict_types = 1);
 
 namespace App\Config;
 
-class BotConfig
+use App\Config\Config;
+
+class BotConfig implements Config
 {
-    private string $botKey;
-    private string $botUsername;
-    private string $botWebhookUrl;
-    private string $certificatePath;
-    private string $installWebhookUrl;
+    private readonly array $config;
 
     public function __construct()
     {
-	$botInfo = json_decode(file_get_contents(__DIR__.'/Secret/bot_config.json'), true);
-
-        $this->botKey = $botInfo['key'];
-        $this->botUsername = $botInfo['username'];
-        $this->botWebhookUrl = $botInfo['webhook'];
-        $this->installWebhookUrl = $botInfo['setWebhook'];
-        $this->certificatePath = $botInfo['certificatePath'];
+	    $botInfo = json_decode(file_get_contents(__DIR__.'/Secret/bot_config.json'), true);
+        $this->config = [
+            'botKey' => $botInfo['key'],
+            'botUsername' => $botInfo['username'],
+            'botWebhookUrl' => $botInfo['webhook'],
+            'installWebhookUrl' => $botInfo['setWebhook'],
+            'certificatePath' => $botInfo['certificatePath']
+        ];
     }
 
-    public function getBotKey() : string
+    public function getConfig(): array
     {
-        return $this->botKey;
-    }
-
-    public function getBotUsername() : string
-    {
-        return $this->botUsername;
-    }
-
-    public function getBotWebhookUrl() : string
-    {
-        return $this->botWebhookUrl;
-    }
-
-    public function getInstallWebhookUrl() : string
-    {
-        return $this->installWebhookUrl;
-    }
-
-    public function getCertificatePath() : string
-    {
-        return $this->certificatePath;
+        return $this->config;
     }
 }
 

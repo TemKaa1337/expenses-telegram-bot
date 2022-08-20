@@ -1,129 +1,69 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace App\Command;
 
-use App\Categories\Categories;
-use App\Exception\InvalidCommandException;
-use App\Command\CommandPool;
-use App\Database\Database;
-use App\Expense\Expense;
-use App\Helper\Helper;
-use App\Http\Request;
-use App\Model\User;
-
-class Command
+enum Command: string
 {
-    private string $command;
-    private string $option;
-    private Expense $expense;
-    private User $user;
+    case Start = '/start';
+    case AddExpense = '/add_expense';
+    case MonthExpenses = '/month_expenses';
+    case DayExpenses = '/day_expenses';
+    case DeleteExpense = '/delete_expense';
+    case AllAliases = '/aliases';
+    case SpecificAliases = '/specific_aliases';
+    case AddCategory = '/add_category';
+    case AddCategoryAlias = '/add_category_alias';
+    case DeleteCategory = '/delete_category';
+    case DeleteCategoryAlias = '/delete_category_alias';
+    case MonthExpensesByCategory = '/month_expenses_by_category';
+    case AverageEachMonthExpenses = '/average_each_month_expenses';
+    case TotalMonthExpenses = '/total_month_expenses';
+    case ExpensesFromDatetime = '/expenses_from_datetime';
 
-    public function __construct(string $command, Expense $expense, User $user)
+    public function getDescription(): string
     {
-        $this->setCommandInfo($command);
-        $this->expense = $expense;
-        $this->user = $user;
+        return match($this) {
+            $this::Start => 'Покажет весь доступный функционал с описанием.',
+            $this::AddExpense => 'Добавить трату.',
+            $this::MonthExpenses => 'Покажет ваши траты за указанный месяц.',
+            $this::DayExpenses => 'Покажет ваши траты за указанный день.',
+            $this::DeleteExpense => 'Удалить трату.',
+            $this::AllAliases => 'Выведет список алиасов для каждого раздела.',
+            $this::SpecificAliases => 'Выведет список алиасов для выбранного раздела.',
+            $this::AddCategory => 'Добавляет новую категорию трат.',
+            $this::AddCategoryAlias => 'Добавляет псевдоним существующей категории.',
+            $this::DeleteCategory => 'Позволит удалить категорию.',
+            $this::DeleteCategoryAlias => 'Позволяет удалить алиас для категории.',
+            $this::MonthExpensesByCategory => 'Позволяет просмотреть общую сумму трат по каждой категории за указанный месяц.',
+            $this::AverageEachMonthExpenses => 'Позволяет просмотреть среднее значение расходов по каждой категории за каждый месяц.',
+            $this::TotalMonthExpenses => 'Выведет общее количество потраченных средств за каждый месяц.',
+            $this::ExpensesFromDatetime => 'Выведет ваши траты начиная с указанной даты.'
+        };
     }
 
-    private function setCommandInfo(string $command) : void
+    public function getCommandArgumentNumber(): int
     {
-        if (strpos($command, ' ') !== false) {
-            $info = array_map('trim', explode(' ', $command));
-
-            if (count($info) > 2) {
-                $command = array_shift($info);
-                $option = implode(' ', $info);
-            } else {
-                [$command, $option] = $info;
-            }
-
-            $this->command = $command;
-            $this->option = $option;
-        } else {
-            if (strpos($command, CommandPool::DELETE_CATEGORY) !== false)
-                [$this->command, $this->option] = [CommandPool::DELETE_CATEGORY, str_replace(CommandPool::DELETE_CATEGORY, '', $command)];
-            else if (strpos($command, CommandPool::DELETE_EXPENSE) !== false)
-                [$this->command, $this->option] = [CommandPool::DELETE_EXPENSE, str_replace(CommandPool::DELETE_EXPENSE, '', $command)];
-            else
-                [$this->command, $this->option] = [$command, ''];
-        }
-    }
-
-    public function isCommand() : bool
-    {
-        return Helper::str($this->command)->startsWith('/');
-    }
-
-    public function handle() : string
-    {
-        $isCommand = $this->isCommand();
-
-        if ($isCommand) {
-            switch ($this->command) {
-                case CommandPool::START: return $this->getAllCommandDescriptions();
-                case CommandPool::DAY_EXPENSES: return $this->expense->getDayExpenses();
-                case CommandPool::MONTH_EXPENSES: return $this->expense->getMonthExpenses($this->option); 
-                case CommandPool::MONTH_EXPENSES_BY_CATEGORY: return $this->expense->getMonthExpensesByCategory($this->option);
-                case CommandPool::PREVIOUS_MONTH_EXPENSES: return $this->expense->getPreviousMonthExpenses($this->option);
-                case CommandPool::AVERAGE_EACH_MONTH_EXPENSES: return $this->expense->getAverageMonthExpensesByCategory($this->option);
-                case CommandPool::TOTAL_MONTH_EXPENSES: return $this->expense->getTotalMonthsExpenses($this->option);
-                case CommandPool::MONTH_EXPENSES_FROM_DATE: return $this->expense->getMonthExpensesFromDate($this->option);
-                case CommandPool::ALIASES:
-                    $categories = new Categories('', new Database());
-                    return $categories->getListOfAllAliases($this->user->getUserId());
-                case CommandPool::DELETE_CATEGORY:
-                    if ($this->option !== '') {
-                        $categoryId = intval($this->option);
-                        $category = new Categories($this->command, new Database());
-    
-                        if ($categoryId !== 0 && $category->isUserAllowedToDeleteCategory($this->user->getUserId(), $categoryId))
-                            return $category->deleteCategory($categoryId);
-                    }
-
-                    return 'Неправильный номер категории!';
-                case CommandPool::DELETE_EXPENSE:
-                    if ($this->option !== '') {
-                        $expenseId = intval($this->option);
-
-                        if ($expenseId !== 0 && $this->expense->isUserAllowedToDeleteExpense($expenseId))
-                            return $this->expense->deleteExpense($expenseId);
-                    }
-
-                    return 'Неправильный номер траты!';
-                case CommandPool::ADD_CATEGORY_ALIAS:
-                    if ($this->option !== '') {
-                        $category = new Categories($this->command.' '.$this->option, new Database());
-                        return $category->addCategoryAlias();
-                    } else return 'Не хватает параметров :(';
-                case CommandPool::ADD_CATEGORY:
-                    if ($this->option !== '') {
-                        $category = new Categories($this->command.' '.$this->option, new Database());
-                        return $category->addCategory($this->user->getUserId());
-                    } else return 'Не хватает параметров :(';
-            }
-        } else return $this->expense->addExpense();
-
-        throw new InvalidCommandException('Такой команды не существует или она введена неверно :(');
-    }
-
-    public function getAllCommandDescriptions() : string
-    {
-        $result = [];
-        $descriptions = CommandPool::COMMAND_DESCRIPTIONS;
-
-        foreach ($descriptions as $command => $description) {
-            $result[] = "{$command} - {$description}";
-        }
-
-        $result[] = 'Для того, чтобы добавить трату вводите в формате: {сумма траты (например, 14.1)} {название или алиас раздела} {примечание}.';
-        $result[] = 'Пример: 14.5 продукты ничего тольком не купил';
-        $result[] = 'Для того, чтобы добавить категорию расходов, введите данные в формате: /add_category {CategoryName}.';
-        $result[] = 'Пример: /add_category Бензин';
-        $result[] = 'Для того, чтобы добавить алиас для категории расходов, введите данные в формате: /add_category_alias {CategoryName} {Alias}.';
-        $result[] = 'Пример: /add_category_alias Бензин бенз (важно, что слово, стоящее сразу после команды /add_category_alias, должно быть таким же по написанию, как вы добавляли через /add_category)';
-
-        return implode(PHP_EOL, $result);
+        return match($this) {
+            $this::Start => 0,
+            $this::AddExpense => 2,
+            $this::DeleteExpense => 1,
+            $this::AllAliases => 0,
+            $this::SpecificAliases => 1,
+            $this::AddCategory => 1,
+            $this::AddCategoryAlias => 2,
+            $this::DeleteCategory => 1,
+            $this::DeleteCategoryAlias => 2,
+            $this::AverageEachMonthExpenses => 0,
+            $this::TotalMonthExpenses => 0,
+            // d || d.m || d.m.Y
+            $this::ExpensesFromDatetime => 1,
+            // null || d || d.m || d.m.Y 
+            $this::DayExpenses => 0,
+            // null || m || m.Y
+            $this::MonthExpenses => 0,
+            // null || m || m.Y 
+            $this::MonthExpensesByCategory => 0
+        };
     }
 }
 

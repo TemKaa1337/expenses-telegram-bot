@@ -11,12 +11,14 @@ CREATE TABLE users (
     first_name VARCHAR,
     second_name VARCHAR
 );
-
+-- MAKE TYPE CHAT_ID REQUEST CREATED_AT NOT NULL
+-- RENAME request TO message
 CREATE TABLE log (
     id SERIAL PRIMARY KEY,
-    chat_id INTEGER,
-    request JSON,
-    created_at TIMESTAMP
+    type VARCHAR NOT NULL,
+    chat_id INTEGER NOT NULL,
+    request JSON NOT NULL,
+    created_at TIMESTAMP NOT NULL
 );
 
 CREATE TABLE categories (
@@ -24,12 +26,12 @@ CREATE TABLE categories (
     category_name VARCHAR UNIQUE,
     user_id INTEGER
 );
-
+-- MAKE ALIAS NOT NULL
 CREATE TABLE category_aliases (
     id SERIAL PRIMARY KEY,
     category_id INTEGER NOT NULL,
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE CASCADE,
-    alias VARCHAR
+    alias VARCHAR NOT NULL
 );
 
 CREATE TABLE expenses (
@@ -51,7 +53,7 @@ CREATE TABLE exception_logging (
     line INTEGER,
     created_at TIMESTAMP
 );
-
+-- DELETE
 CREATE TABLE response_logging (
     id SERIAL PRIMARY KEY,
     created_at TIMESTAMP,
