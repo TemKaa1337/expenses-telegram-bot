@@ -13,6 +13,8 @@ use App\Exception\InvalidNewCategoryException;
 use App\Exception\NoCategoriesFoundException;
 use App\Exception\NoCategoryAliasesFoundException;
 use App\Exception\NoExpenseFoundException;
+use App\Exception\NoSuchCategoryAliasException;
+use App\Exception\NoSuchCategoryException;
 use App\Exception\UpdateNotAllowedException;
 use App\Http\Response;
 use App\Model\User;
@@ -66,7 +68,9 @@ class App
             |InvalidBotActionException
             |NoCategoriesFoundException
             |NoCategoryAliasesFoundException
-            |NoExpenseFoundException $e
+            |NoExpenseFoundException 
+            |NoSuchCategoryException
+            |NoSuchCategoryAliasException $e
         ) {
             $message = $e->getMessage();
         } catch (\Exception $e) {
