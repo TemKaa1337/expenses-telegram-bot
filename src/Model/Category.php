@@ -26,7 +26,7 @@ class Category
         $categoryInfo = $this->db->execute(
             "
                 SELECT 
-                    id, user_id, alias 
+                    categories.id, user_id, alias 
                 FROM 
                     categories 
                 JOIN 
