@@ -34,9 +34,9 @@ class App
 
         $logger->info(chatId: 123, type: 'request', message: $contents);
 
-        $isUpdate = !isset($contents['message']);
+        $isUpdate = isset($contents['edited_message']);
         $chatId = $isUpdate
-                    ? $contents['chat']['id']
+                    ? $contents['edited_message']['chat']['id']
                     : $contents['message']['chat']['id'];
 
         try {
