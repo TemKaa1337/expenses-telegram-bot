@@ -43,8 +43,6 @@ class ExpenseService
     {
         $groupFlagExist = in_array('-g', $arrayOfFlags);
         $showFlagExist = in_array('-s', $arrayOfFlags);
-        $datetimeFrom = $dateFrom.' 00:00:00';
-        $datetimeTo = $dateTo.' 23:59:59';
 
         $groupBySql = $groupFlagExist ? 'GROUP BY categories.category_name, expenses.id' : '';
         $additionalWhereSql = $showFlagExist ? "AND categories.category_name not in ('CyberShoke', 'Steam')" : '';
@@ -69,7 +67,7 @@ class ExpenseService
                 ORDER BY 
                     expenses.id asc
             ", 
-            [$this->user->getDatabaseUserId(), $datetimeFrom, $datetimeTo]
+            [$this->user->getDatabaseUserId(), $dateFrom, $dateTo]
         );
 
         if (empty($expenses)) {
