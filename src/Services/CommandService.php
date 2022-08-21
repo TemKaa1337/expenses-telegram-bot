@@ -65,7 +65,7 @@ class CommandService
                 return implode(PHP_EOL, $output);
             case Command::AddExpense:
                 $amount = (float) $this->arguments[0];
-                $alias = $this->arguments[1];
+                $categoryName = $this->arguments[1];
                 $note = $this->arguments[2] ?? null;
                 
                 $category = new Category(db: $this->db, user: $this->user, categoryName: $categoryName);
