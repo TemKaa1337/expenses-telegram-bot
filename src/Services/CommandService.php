@@ -158,12 +158,12 @@ class CommandService
                 $categoryAliases = new CategoryAliases(db: $this->db, user: $this->user);
                 $aliases =  $categoryAliases->getAllALiases();
 
-                $output = [];
+                $output = ['Список алиасов для категорий:'];
                 $lastCategory = null;
                 foreach ($aliases as $alias) {
                     if ($alias['category_name'] !== $lastCategory) {
                         $lastCategory = $alias['category_name'];
-                        $output[] = "Список алиасов для категории {$lastCategory}:";
+                        $output[] = $lastCategory;
                     }
 
                     $output[] = ' - '.$alias['alias'];
