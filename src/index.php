@@ -32,18 +32,12 @@ class App
         $db = new SqlDatabase();
         $logger = new Logger(db: $db);
 
-        $logger->info(chatId: 123, type: 'request', message: $contents);
-
         $isUpdate = isset($contents['edited_message']);
         $chatId = $isUpdate
                     ? $contents['edited_message']['chat']['id']
                     : $contents['message']['chat']['id'];
 
         try {
-            if ($isUpdate) {
-                throw new UpdateNotAllowedException(ErrorMessage::UpdateNotAllowed->value);
-            }
-
             $logger->info(chatId: $chatId, type: 'request', message: $contents);
 
             $requestValidator = new RequestValidatorService(input: $contents);

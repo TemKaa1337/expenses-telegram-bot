@@ -10,7 +10,7 @@ class RequestValidatorService implements Validator
     public function __construct(
         private readonly array $input
     )
-    { }
+    {}
 
     public function validate(): array
     {
