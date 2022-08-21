@@ -45,7 +45,7 @@ class Category
         }
     }
 
-    private function checkIfCategoryExists(): void
+    public function checkIfCategoryExists(): void
     {
         if (!isset($this->categoryId)) {
             throw new NoSuchCategoryException(ErrorMessage::UnknownCategory->value);
@@ -61,7 +61,6 @@ class Category
     
     public function getCategoryId(): int
     {
-        $this->checkIfCategoryExists();
         return $this->categoryId;
     }
 

@@ -22,6 +22,7 @@ class ExpenseService
         string|null $note
     ): void
     {
+        $category->checkIfCategoryExists();
         $this->db->execute("
             INSERT INTO 
                 expenses (created_at, amount, user_id, category_id, note) 

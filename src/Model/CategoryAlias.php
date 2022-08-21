@@ -22,6 +22,7 @@ class CategoryAlias
 
     private function setCategoryAliasInfo(): void
     {
+        $this->category->checkIfCategoryExists();
         $categoryAliasInfo = $this->db->execute('SELECT id FROM category_aliases WHERE category_id = ? and alias = ?', [$this->category->getCategoryId(), $this->alias]);
         if (!empty($categoryAliasInfo)) {
             $this->aliasId = $categoryAliasInfo[0]['id'];
@@ -51,12 +52,14 @@ class CategoryAlias
     public function add(): void
     {
         $this->checkIfCategoryAliasDoesntExist();
+        $this->category->checkIfCategoryExists();
         $query = 'INSERT INTO category_aliases(category_id, alias) VALUES (?, ?)';
         $this->db->execute($query, [$this->category->getCategoryId(), $this->alias]);
     }
 
     public function getAliases(): array
     {
+        $this->category->checkIfCategoryExists();
         $aliases = $this->db->execute("
             SELECT 
                 categories.id, 
