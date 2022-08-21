@@ -221,7 +221,7 @@ class ExpenseService
                     year desc, 
                     month desc;
             ",
-            []
+            [$this->user->getDatabaseUserId()]
         );
 
         if (empty($expenses)) {
