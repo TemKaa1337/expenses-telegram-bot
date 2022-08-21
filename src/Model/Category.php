@@ -48,7 +48,7 @@ class Category
             throw new NoSuchCategoryException(ErrorMessage::UnknownCategory->value);
         }
 
-        $categoryInfo = $db->execute('SELECT id, category_name FROM categories WHERE user_id = ? and id = ?', [$userId, $aliasInfo['category_id']]);
+        $categoryInfo = $db->execute('SELECT id, category_name FROM categories WHERE user_id = ? and id = ?', [$userId, $aliasInfo[0]['category_id']]);
         if (empty($categoryInfo)) {
             throw new NoSuchCategoryException(ErrorMessage::UnknownCategory->value);
         }
