@@ -1,6 +1,0 @@
-/src/config/Secret/
-.gitignore
-/cert/
-/src/vendor/
-/src/cert/
-/vendor
