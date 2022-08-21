@@ -3,60 +3,26 @@
 namespace App\Model;
 
 use App\Database\Database;
-use App\Exception\CategoryAliasAlreadyExistException;
 use App\Exception\NoCategoryAliasesFoundException;
-use App\Exception\NoSuchCategoryAliasException;
+use App\Model\Checks\CategoryAliasCheck;
 
 class CategoryAlias
 {
     private readonly int $aliasId;
 
+    use CategoryAliasCheck;
+
     public function __construct(
         private readonly Database $db,
         private readonly Category $category,
-        private readonly null|string $alias = null,
-        private readonly int|null $userId = null
+        private readonly null|string $alias = null
     ) 
     { 
-        $this->setCategoryAliasInfo();
-    }
-
-    private function setCategoryAliasInfo(): void
-    {
         $this->category->checkIfCategoryExists();
         $categoryAliasInfo = $this->db->execute('SELECT id FROM category_aliases WHERE category_id = ? and alias = ?', [$this->category->getCategoryId(), $this->alias]);
         if (!empty($categoryAliasInfo)) {
             $this->aliasId = $categoryAliasInfo[0]['id'];
         }
-    }
-
-    private function checkIfCategoryAliasExists(): void
-    {
-        if (!isset($this->aliasId)) {
-            throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
-        }
-    }
-
-    private function checkIfCategoryAliasDoesntExist(): void
-    {
-        if (isset($this->aliasId)) {
-            throw new CategoryAliasAlreadyExistException('Такой алиас категории уже существует');
-        }
-    }
-
-    public static function checkIfUserHasCategoryAlias(Database $db, string $alias, int $userId): int
-    {
-        $aliasInfo = $db->execute('SELECT category_id FROM category_aliases WHERE alias = ?', [$alias]);
-        if (empty($aliasInfo)) {
-            throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
-        }
-
-        $categoryInfo = $db->execute('SELECT id FROM categories WHERE id = ? and user_id = ?', [$aliasInfo[0]['category_id'], $userId]);
-        if (empty($categoryInfo)) {
-            throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
-        }
-
-        return $categoryInfo[0]['id'];
     }
 
     public function delete(): void

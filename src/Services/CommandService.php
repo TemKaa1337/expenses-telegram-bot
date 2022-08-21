@@ -65,11 +65,15 @@ class CommandService
                 return implode(PHP_EOL, $output);
             case Command::AddExpense:
                 $amount = (float) $this->arguments[0];
-                $categoryName = $this->arguments[1];
+                $alias = $this->arguments[1];
                 $note = $this->arguments[2] ?? null;
                 
-                $category = new Category(db: $this->db, user: $this->user, categoryName: $categoryName);
-                // $alias = new CategoryAlias(db: $this->db, alias: $alias);
+                $category = Category::findByAlias(
+                    db: $this->db, 
+                    userId: $this->user->getDatabaseUserId(), 
+                    alias: $alias
+                );
+                
                 $expenseService = new ExpenseService(db: $this->db, user: $this->user);
                 $expenseService->addExpense(
                     category: $category,
@@ -173,7 +177,12 @@ class CommandService
                 return implode(PHP_EOL, $output);
             case Command::SpecificAliases:
                 $categoryName = $this->arguments[0];
-                $category = new Category(db: $this->db, user: $this->user, categoryName: $categoryName);
+
+                $category = new Category(
+                    db: $this->db, 
+                    userId: $this->user->getDatabaseUserId(), 
+                    categoryName: $categoryName
+                );
                 $aliases = $category->getAliases();
 
                 $output = ["Список алиасов для категории {$categoryName}:"];
@@ -185,28 +194,48 @@ class CommandService
                 return implode(PHP_EOL, $output);
             case Command::AddCategory:
                 $categoryName = $this->arguments[0];
-                $category = new Category(db: $this->db, user: $this->user, categoryName: $categoryName);
+                
+                $category = new Category(
+                    db: $this->db, 
+                    userId: $this->user->getDatabaseUserId(), 
+                    categoryName: $categoryName
+                );
                 $category->add();
 
                 return SuccessMessage::CategoryAdded->value;
             case Command::AddCategoryAlias:
                 $userCategoryName = $this->arguments[0];
                 $userCategoryAlias = $this->arguments[1];
-                $category = new Category(db: $this->db, user: $this->user, categoryName: $userCategoryName);
+                
+                $category = new Category(
+                    db: $this->db, 
+                    userId: $this->user->getDatabaseUserId(), 
+                    categoryName: $userCategoryName
+                );
                 $categoryAlias = new CategoryAlias(db: $this->db, category: $category, alias: $userCategoryAlias);
                 $categoryAlias->add();
 
                 return SuccessMessage::CategoryAliasAdded->value;
             case Command::DeleteCategory:
                 $categoryName = $this->arguments[0];
-                $category = new Category(db: $this->db, user: $this->user, categoryName: $categoryName);
+
+                $category = new Category(
+                    db: $this->db, 
+                    userId: $this->user->getDatabaseUserId(), 
+                    categoryName: $categoryName
+                );
                 $category->delete();
 
                 return SuccessMessage::CategoryDeleted->value;
             case Command::DeleteCategoryAlias:
                 $userCategoryName = $this->arguments[0];
                 $userCategoryAlias = $this->arguments[1];
-                $category = new Category(db: $this->db, user: $this->user, categoryName: $userCategoryName);
+                
+                $category = new Category(
+                    db: $this->db, 
+                    userId: $this->user->getDatabaseUserId(), 
+                    categoryName: $userCategoryName
+                );
                 $categoryAlias = new CategoryAlias(db: $this->db, category: $category, alias: $userCategoryAlias);
                 $categoryAlias->delete();
 

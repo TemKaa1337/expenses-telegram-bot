@@ -22,12 +22,12 @@ class ExpenseService
         string|null $note
     ): void
     {
-        $categoryId = $category->checkIfCategoryAliasExists();
+        $category->checkIfCategoryExists();
         $this->db->execute("
             INSERT INTO 
                 expenses (created_at, amount, user_id, category_id, note) 
             VALUES (?, ?, ?, ?, ?)
-        ", [date('Y-m-d H:i:s'), $amount, $this->user->getDatabaseUserId(), $categoryId, $note]);
+        ", [date('Y-m-d H:i:s'), $amount, $this->user->getDatabaseUserId(), $category->getCategoryId(), $note]);
     }
 
     public function delete(int $expenseId): void

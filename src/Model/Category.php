@@ -2,26 +2,22 @@
 
 namespace App\Model;
 
-use App\Exception\CategoryAlreadyExistException;
-use App\Exception\NoSuchCategoryException;
 use App\Database\Database;
+use App\Exception\NoSuchCategoryException;
 use App\Messages\ErrorMessage;
-use App\Model\User;
+use App\Model\Checks\CategoryCheck;
 
 class Category
 {
     private readonly int $categoryId;
 
+    use CategoryCheck;
+
     public function __construct(
         private readonly Database $db,
-        private readonly User $user,
+        private readonly int $userId,
         private readonly string $categoryName
     )
-    {
-        $this->setCategoryInfo();
-    }
-
-    private function setCategoryInfo(): void
     {
         $categoryInfo = $this->db->execute(
             "
@@ -33,7 +29,7 @@ class Category
                     category_name = ? 
                     AND user_id = ?
             ", 
-            [$this->categoryName, $this->user->getDatabaseUserId()]
+            [$this->categoryName, $this->userId]
         );
 
         if (!empty($categoryInfo)) {
@@ -41,27 +37,27 @@ class Category
         }
     }
 
-    public function checkIfCategoryExists(): void
+    public static function findByAlias(
+        Database $db,
+        int $userId,
+        string $alias
+    ): self
     {
-        if (!isset($this->categoryId)) {
+        $aliasInfo = $db->execute('SELECT category_id FROM category_aliases WHERE alias = ?', [$alias]);
+        if (empty($aliasInfo)) {
             throw new NoSuchCategoryException(ErrorMessage::UnknownCategory->value);
         }
-    }
 
-    public function checkIfCategoryAliasExists(): int
-    {
-        try {
-            $this->checkIfCategoryExists();
-        } catch (NoSuchCategoryException $e) {
-            return CategoryAlias::checkIfUserHasCategoryAlias(db: $this->db, alias: $this->categoryName, userId: $this->user->getDatabaseUserId());
+        $categoryInfo = $db->execute('SELECT id, category_name FROM categories WHERE user_id = ? and id = ?', [$userId, $aliasInfo['category_id']]);
+        if (empty($categoryInfo)) {
+            throw new NoSuchCategoryException(ErrorMessage::UnknownCategory->value);
         }
-    }
 
-    private function checkIfCategoryDoesntExist(): void
-    {
-        if (isset($this->categoryId)) {
-            throw new CategoryAlreadyExistException(ErrorMessage::CategoryAlreadyExist->value);
-        }
+        return new Category(
+            db: $db,
+            userId: $userId,
+            categoryName: $categoryInfo[0]['category_name']
+        );
     }
     
     public function getCategoryId(): int
@@ -73,10 +69,10 @@ class Category
     {
         $this->checkIfCategoryDoesntExist();
         $query = 'INSERT INTO categories (category_name, user_id) VALUES (?, ?)';
-        $this->db->execute($query, [$this->categoryName, $this->user->getDatabaseUserId()]);
-        $this->setCategoryInfo();
+        $this->db->execute($query, [$this->categoryName, $this->userId]);
 
-        $alias = new CategoryAlias(db: $this->db, category: $this, alias: $this->categoryName);
+        $category = new self(db: $this->db, userId: $this->userId, categoryName: $this->categoryName);
+        $alias = new CategoryAlias(db: $this->db, category: $category, alias: $this->categoryName);
         $alias->add();
     }
 
