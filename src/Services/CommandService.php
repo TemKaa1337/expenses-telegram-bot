@@ -134,7 +134,7 @@ class CommandService
                 $total = 0;
                 foreach ($expenses as $expense) {
                     $date = date('d.m.Y H:i:s', strtotime($expense['created_at']));
-                    $commandToDelete = "(/delete{$expense['id']})";
+                    $commandToDelete = "(/delete {$expense['id']})";
                     $amountAndCategory = "{$expense['amount']}р, {$expense['category_name']}";
                     $note = $expense['note'] !== null ? ", {$expense['note']}." : '';
 
