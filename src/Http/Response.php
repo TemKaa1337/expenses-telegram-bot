@@ -30,7 +30,7 @@ class Response
             $max = (int) ($messageLength / 4096);
 
             for ($i = 0; $i < $max + 1; $i ++) {
-                $slicedMessage = substr($this->message, $i * 4096, 4096);
+                $slicedMessage = mb_substr($this->message, $i * 4096, 4096);
                 $response = new Response(chatId: $this->chatId, message: $slicedMessage);
                 $responseMessages[] = $response->sendResponse();
             }
