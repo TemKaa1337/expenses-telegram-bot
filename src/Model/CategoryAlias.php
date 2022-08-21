@@ -51,7 +51,7 @@ class CategoryAlias
             throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
         }
 
-        $categoryInfo = $db->execute('SELECT id FROM categories WHERE id = ? and user_id = ?', [$aliasInfo['category_id'], $userId]);
+        $categoryInfo = $db->execute('SELECT id FROM categories WHERE id = ? and user_id = ?', [$aliasInfo[0]['category_id'], $userId]);
         if (empty($categoryInfo)) {
             throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
         }
