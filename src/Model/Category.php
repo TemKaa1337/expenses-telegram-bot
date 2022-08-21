@@ -71,9 +71,12 @@ class Category
         $query = 'INSERT INTO categories (category_name, user_id) VALUES (?, ?)';
         $this->db->execute($query, [$this->categoryName, $this->user->getDatabaseUserId()]);
         $this->setCategoryInfo();
+
+        $alias = new CategoryAlias(db: $this->db, category: $this, alias: $this->categoryName);
+        $alias->add();
         
-        $query = 'INSERT INTO category_aliases(category_id, alias) VALUES (?, ?)';
-        $this->db->execute($query, [$this->categoryId, $this->categoryName]);
+        // $query = 'INSERT INTO category_aliases(category_id, alias) VALUES (?, ?)';
+        // $this->db->execute($query, [$this->categoryId, $this->categoryName]);
     }
 
     public function delete(): void
