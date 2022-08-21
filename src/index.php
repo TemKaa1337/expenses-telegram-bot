@@ -13,6 +13,7 @@ use App\Exception\InvalidNewCategoryException;
 use App\Exception\NoCategoriesFoundException;
 use App\Exception\NoCategoryAliasesFoundException;
 use App\Exception\NoExpenseFoundException;
+use App\Exception\UpdateNotAllowedException;
 use App\Http\Response;
 use App\Model\User;
 use App\Logger\Logger;
@@ -31,8 +32,17 @@ class App
         $db = new SqlDatabase();
         $logger = new Logger(db: $db);
 
+        $isUpdate = !isset($contents['message']);
+        $chatId = $isUpdate
+                    ? $contents['chat']['id']
+                    : $contents['message']['chat']['id'];
+
         try {
-            $logger->info(chatId: $contents['message']['chat']['id'], type: 'request', message: $contents);
+            if ($isUpdate) {
+                throw new UpdateNotAllowedException('Редактирование сообщения не поддерживается.');
+            }
+
+            $logger->info(chatId: $chatId, type: 'request', message: $contents);
 
             $requestValidator = new RequestValidatorService(input: $contents);
             $contents = $requestValidator->validate();
@@ -68,10 +78,10 @@ class App
             $message = ErrorMessage::UnknownError->value;
         }
 
-        $response = new Response(chatId: $contents['message']['chat']['id'], message: $message);
+        $response = new Response(chatId: $chatId, message: $message);
         $responseOutput = $response->sendResponse();
 
-        $logger->info(chatId: $contents['message']['chat']['id'], type: 'response', message: $responseOutput);
+        $logger->info(chatId: $chatId, type: 'response', message: $responseOutput);
     }
 }
 
