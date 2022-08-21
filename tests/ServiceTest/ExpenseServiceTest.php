@@ -15,16 +15,12 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $categoryMock = $this->createMock(Category::class);
         $categoryMock->categoryId = 1;
         $categoryMock->method('getCategoryId')
                     ->willReturn(1);
 
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $result = $expenseService->addExpense(category: $categoryMock, amount: 7.5, note: 'note');
         $this->assertEmpty($result);
     }
@@ -35,16 +31,12 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $categoryMock = $this->createMock(Category::class);
         $categoryMock->categoryId = 1;
         $categoryMock->method('getCategoryId')
                     ->willReturn(1);
 
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $result = $expenseService->addExpense(category: $categoryMock, amount: 7.5, note: '');
         $this->assertEmpty($result);
     }
@@ -55,11 +47,7 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $this->expectException(NoExpenseFoundException::class);
         $expenseService->delete(expenseId: 1);
     }
@@ -73,11 +61,7 @@ final class ExpenseServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $empty = $expenseService->delete(expenseId: 1);
         $this->assertEmpty($empty);
     }
@@ -87,12 +71,8 @@ final class ExpenseServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([['id' => 1, 'name' => 'name']]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
         
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $result = $expenseService->getSpecificMonthExpenses(arrayOfFlags: [], dateFrom: '', dateTo: '');
         $this->assertEquals($result, [['id' => 1, 'name' => 'name']]);
     }
@@ -103,11 +83,7 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $this->expectException(NoExpenseFoundException::class);
         $expenseService->getSpecificMonthExpenses(arrayOfFlags: [], dateFrom: '', dateTo: '');
     }
@@ -117,12 +93,8 @@ final class ExpenseServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([['id' => 1, 'name' => 'name']]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
         
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $result = $expenseService->getSpecificDayExpenses(arrayOfFlags: [], datetimeFrom: '', datetimeTo: '');
         $this->assertEquals($result, [['id' => 1, 'name' => 'name']]);
     }
@@ -133,11 +105,7 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $this->expectException(NoExpenseFoundException::class);
         
         $expenseService->getSpecificDayExpenses(arrayOfFlags: [], datetimeFrom: '', datetimeTo: '');
@@ -148,12 +116,8 @@ final class ExpenseServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([['id' => 1, 'name' => 'name']]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
         
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $result = $expenseService->getMonthExpensesByCategory(arrayOfFlags: [], datetimeFrom: '', datetimeTo: '');
         $this->assertEquals($result, [['id' => 1, 'name' => 'name']]);
     }
@@ -164,11 +128,7 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $this->expectException(NoExpenseFoundException::class);
         $expenseService->getMonthExpensesByCategory(arrayOfFlags: [], datetimeFrom: '', datetimeTo: '');
     }
@@ -178,12 +138,8 @@ final class ExpenseServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([['id' => 1, 'name' => 'name']]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
         
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $result = $expenseService->getAverageMonthExpenses(arrayOfFlags: []);
         $this->assertEquals($result, [['id' => 1, 'name' => 'name']]);
     }
@@ -194,11 +150,7 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $this->expectException(NoExpenseFoundException::class);
         $expenseService->getAverageMonthExpenses(arrayOfFlags: []);
     }
@@ -208,12 +160,8 @@ final class ExpenseServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([['id' => 1, 'name' => 'name']]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
         
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $result = $expenseService->getTotalMonthExpenses(arrayOfFlags: []);
         $this->assertEquals($result, [['id' => 1, 'name' => 'name']]);
     }
@@ -224,11 +172,7 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $this->expectException(NoExpenseFoundException::class);
         $expenseService->getTotalMonthExpenses(arrayOfFlags: []);
     }
@@ -238,12 +182,8 @@ final class ExpenseServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([['id' => 1, 'name' => 'name']]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
         
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $result = $expenseService->getExpensesFromSpecificDatetime(arrayOfFlags: [], datetimeFrom: '');
         $this->assertEquals($result, [['id' => 1, 'name' => 'name']]);
     }
@@ -254,11 +194,7 @@ final class ExpenseServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expenseService = new ExpenseService(db: $dbMock, user: $userMock);
+        $expenseService = new ExpenseService(db: $dbMock, userId: 1);
         $this->expectException(NoExpenseFoundException::class);
         $expenseService->getExpensesFromSpecificDatetime(arrayOfFlags: [], datetimeFrom: '');
     }

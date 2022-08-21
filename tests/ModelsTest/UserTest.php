@@ -10,7 +10,7 @@ final class UserTest extends TestCase
     {
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
-                ->willReturn(['id' => 16]);
+                ->willReturn([['id' => 16]]);
 
         $user = new User(db: $dbMock, telegramUserId: 1, firstName: 'Artem');
         $databaseId = $user->getDatabaseUserId();

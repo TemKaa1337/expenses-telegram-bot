@@ -1,29 +1,32 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace App\Services;
 
-use App\Command\Command;
-use App\Database\Database;
+use App\Services\Validator\Date\{
+    MonthAndYearValidator,
+    DateValidator
+};
+use App\Model\{
+    CategoryAliases,
+    CategoryAlias,
+    Category,
+    User
+};
 use App\Exception\InvalidInputException;
 use App\Messages\SuccessMessage;
-use App\Model\User;
-use App\Model\Category;
-use App\Model\CategoryAlias;
-use App\Model\CategoryAliases;
 use App\Services\ExpenseService;
-use App\Services\Validator\Date\DateValidator;
-use App\Services\Validator\Date\MonthAndYearValidator;
+use App\Database\Database;
+use App\Command\Command;
 
 class CommandService
 {
     public function __construct(
         private readonly Database $db,
-        private readonly User $user,
+        private readonly int $userId,
         private readonly Command $command,
         private readonly array $arguments
     )
-    { }
+    {}
 
     public function handle(): string
     {
@@ -57,8 +60,10 @@ class CommandService
                         '/day_expenses 3.10.21',
                         '/day_expenses 3.10.2021',
                         'Для удаления траты, нажмите на синий текст при выводе расходов, он будет в формате /delete_expense100',
-                        'Для удаления категории, нажмите на синий текст при выводе списка категорий, он будет в формате /delete_category100',
-                        'Для удаления алиаса категории, нажмите на синий текст при выводе списка алиасов категорий, он будет в формате /delete_category_alias100',
+                        'Для удаления категории, введите команду в формате /delete_category {название категории}. Например:',
+                        '/delete_category Бензин',
+                        'Для удаления алиаса категории, введите команду в формате /delete_category_alias {название категории} {название алиаса}. Например:',
+                        '/delete_category_alias Бензин бенз'
                     ]
                 );
                 
@@ -70,11 +75,11 @@ class CommandService
                 
                 $category = Category::findByAlias(
                     db: $this->db, 
-                    userId: $this->user->getDatabaseUserId(), 
+                    userId: $this->userId, 
                     alias: $alias
                 );
                 
-                $expenseService = new ExpenseService(db: $this->db, user: $this->user);
+                $expenseService = new ExpenseService(db: $this->db, userId: $this->userId);
                 $expenseService->addExpense(
                     category: $category,
                     amount: $amount,
@@ -94,7 +99,7 @@ class CommandService
                     array_shift($arrayOfFlags);
                 }
 
-                $expenseService = new ExpenseService(db: $this->db, user: $this->user);
+                $expenseService = new ExpenseService(db: $this->db, userId: $this->userId);
                 $expenses = $expenseService->getSpecificDayExpenses(
                     arrayOfFlags: $arrayOfFlags,
                     datetimeFrom: $datetimeFrom,
@@ -128,7 +133,7 @@ class CommandService
                     array_shift($arrayOfFlags);
                 }
 
-                $expenseService = new ExpenseService(db: $this->db, user: $this->user);
+                $expenseService = new ExpenseService(db: $this->db, userId: $this->userId);
                 $expenses = $expenseService->getSpecificMonthExpenses(
                     arrayOfFlags: $arrayOfFlags,
                     dateFrom: $datetimeFrom,
@@ -155,12 +160,12 @@ class CommandService
                 return implode(PHP_EOL, $output);
             case Command::DeleteExpense:
                 $expenseId = (int) $this->arguments[0];
-                $expenseService = new ExpenseService(db: $this->db, user: $this->user);
+                $expenseService = new ExpenseService(db: $this->db, userId: $this->userId);
                 $expenseService->delete(expenseId: $expenseId);
 
                 return SuccessMessage::ExpenseDeleted->value;
             case Command::AllAliases:
-                $categoryAliases = new CategoryAliases(db: $this->db, user: $this->user);
+                $categoryAliases = new CategoryAliases(db: $this->db, userId: $this->userId);
                 $aliases =  $categoryAliases->getAllALiases();
 
                 $output = ['Список алиасов для категорий:'];
@@ -168,7 +173,7 @@ class CommandService
                 foreach ($aliases as $alias) {
                     if ($alias['category_name'] !== $lastCategory) {
                         $lastCategory = $alias['category_name'];
-                        $output[] = $lastCategory;
+                        $output[] = "{$lastCategory}:";
                     }
 
                     $output[] = ' - '.$alias['alias'];
@@ -180,7 +185,7 @@ class CommandService
 
                 $category = new Category(
                     db: $this->db, 
-                    userId: $this->user->getDatabaseUserId(), 
+                    userId: $this->userId, 
                     categoryName: $categoryName
                 );
                 $aliases = $category->getAliases();
@@ -197,7 +202,7 @@ class CommandService
                 
                 $category = new Category(
                     db: $this->db, 
-                    userId: $this->user->getDatabaseUserId(), 
+                    userId: $this->userId, 
                     categoryName: $categoryName
                 );
                 $category->add();
@@ -209,7 +214,7 @@ class CommandService
                 
                 $category = new Category(
                     db: $this->db, 
-                    userId: $this->user->getDatabaseUserId(), 
+                    userId: $this->userId, 
                     categoryName: $userCategoryName
                 );
                 $categoryAlias = new CategoryAlias(db: $this->db, category: $category, alias: $userCategoryAlias);
@@ -221,7 +226,7 @@ class CommandService
 
                 $category = new Category(
                     db: $this->db, 
-                    userId: $this->user->getDatabaseUserId(), 
+                    userId: $this->userId, 
                     categoryName: $categoryName
                 );
                 $category->delete();
@@ -233,7 +238,7 @@ class CommandService
                 
                 $category = new Category(
                     db: $this->db, 
-                    userId: $this->user->getDatabaseUserId(), 
+                    userId: $this->userId, 
                     categoryName: $userCategoryName
                 );
                 $categoryAlias = new CategoryAlias(db: $this->db, category: $category, alias: $userCategoryAlias);
@@ -252,7 +257,7 @@ class CommandService
                     array_shift($arrayOfFlags);
                 }
 
-                $expenseService = new ExpenseService(db: $this->db, user: $this->user);
+                $expenseService = new ExpenseService(db: $this->db, userId: $this->userId);
                 $expenses = $expenseService->getMonthExpensesByCategory(
                     arrayOfFlags: $arrayOfFlags,
                     datetimeTo: $datetimeTo,
@@ -281,7 +286,7 @@ class CommandService
         
                 return implode(PHP_EOL, $output);
             case Command::AverageEachMonthExpenses:
-                $expenseService = new ExpenseService(db: $this->db, user: $this->user);
+                $expenseService = new ExpenseService(db: $this->db, userId: $this->userId);
                 $expenses = $expenseService->getAverageMonthExpenses(arrayOfFlags: $this->arguments);
 
                 $result = [];
@@ -312,7 +317,7 @@ class CommandService
         
                 return implode(PHP_EOL, $average); 
             case Command::TotalMonthExpenses:
-                $expenseService = new ExpenseService(db: $this->db, user: $this->user);
+                $expenseService = new ExpenseService(db: $this->db, userId: $this->userId);
                 $expenses = $expenseService->getTotalMonthExpenses(arrayOfFlags: $this->arguments);
 
                 $output = [];
@@ -332,7 +337,7 @@ class CommandService
                     array_shift($arrayOfFlags);
                 }
 
-                $expenseService = new ExpenseService(db: $this->db, user: $this->user);
+                $expenseService = new ExpenseService(db: $this->db, userId: $this->userId);
                 $expenses = $expenseService->getExpensesFromSpecificDatetime(
                     arrayOfFlags: $arrayOfFlags,
                     datetimeFrom: $datetimeFrom

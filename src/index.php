@@ -4,25 +4,28 @@ namespace App;
 
 include('../vendor/autoload.php');
 
+use App\Exception\{
+    InvalidBotActionException,
+    InvalidCommandException,
+    InvalidInputException,
+    InvalidNewAliasException,
+    InvalidNewCategoryException,
+    NoCategoriesFoundException,
+    NoCategoryAliasesFoundException,
+    NoExpenseFoundException,
+    NoSuchCategoryAliasException,
+    NoSuchCategoryException
+};
+use App\Services\{
+    Validator\CommandValidatorService,
+    Validator\RequestValidatorService,
+    CommandService
+};
+use App\Messages\ErrorMessage;
 use App\Database\SqlDatabase;
-use App\Exception\InvalidBotActionException;
-use App\Exception\InvalidCommandException;
-use App\Exception\InvalidInputException;
-use App\Exception\InvalidNewAliasException;
-use App\Exception\InvalidNewCategoryException;
-use App\Exception\NoCategoriesFoundException;
-use App\Exception\NoCategoryAliasesFoundException;
-use App\Exception\NoExpenseFoundException;
-use App\Exception\NoSuchCategoryAliasException;
-use App\Exception\NoSuchCategoryException;
-use App\Exception\UpdateNotAllowedException;
+use App\Logger\Logger;
 use App\Http\Response;
 use App\Model\User;
-use App\Logger\Logger;
-use App\Messages\ErrorMessage;
-use App\Services\Validator\CommandValidatorService;
-use App\Services\Validator\RequestValidatorService;
-use App\Services\CommandService;
 
 class App
 {
@@ -55,7 +58,7 @@ class App
 
             $command = new CommandService(
                 db: $db,
-                user: $user, 
+                userId: $user->getDatabaseUserId(), 
                 command: $commandInfo['command'], 
                 arguments: $commandInfo['arguments']
             );

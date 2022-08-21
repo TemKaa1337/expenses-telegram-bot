@@ -14,11 +14,7 @@ final class CategoryAliasesTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $aliases = new CategoryAliases(db: $dbMock, user: $userMock);
+        $aliases = new CategoryAliases(db: $dbMock, userId: 1);
         $this->expectException(NoCategoriesFoundException::class);
         $aliases->getAllALiases();
     }
@@ -31,11 +27,7 @@ final class CategoryAliasesTest extends TestCase
                     [['id' => 10, 'name' => 'name']]
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $aliases = new CategoryAliases(db: $dbMock, user: $userMock);
+        $aliases = new CategoryAliases(db: $dbMock, userId: 1);
         $result = $aliases->getAllALiases();
         $this->assertEquals($result, [['id' => 10, 'name' => 'name']]);
     }

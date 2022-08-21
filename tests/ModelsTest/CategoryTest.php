@@ -16,14 +16,13 @@ final class CategoryTest extends TestCase
                 ->will($this->onConsecutiveCalls(
                     [],
                     [],
-                    ['id' => 10],
+                    [['id' => 10]],
+                    [],
+                    [],
                     []
                 ));
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
-        $category = new Category(db: $dbMock, user: $userMock, categoryName: 'new_category_test');
+        $category = new Category(db: $dbMock, userId: 1, categoryName: 'new_category_test');
         $empty = $category->add();
         $this->assertEmpty($empty, 'Function return value is not empty');
     }
@@ -32,12 +31,9 @@ final class CategoryTest extends TestCase
     {
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
-                ->willReturn(['id' => 10]);
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
+                ->willReturn([['id' => 10]]);
 
-        $category = new Category(db: $dbMock, user: $userMock, categoryName: 'new_category_test');
+        $category = new Category(db: $dbMock, userId: 1, categoryName: 'new_category_test');
         $this->expectException(CategoryAlreadyExistException::class);
         $category->add();
     }
@@ -47,15 +43,12 @@ final class CategoryTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 10],
+                    [['id' => 10]],
                     [],
                     []
                 ));
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
-        $category = new Category(db: $dbMock, user: $userMock, categoryName: 'new_category_test');
+        $category = new Category(db: $dbMock, userId: 1, categoryName: 'new_category_test');
         $empty = $category->delete();
         $this->assertEmpty($empty, 'Function return value is not empty');
     }
@@ -65,11 +58,8 @@ final class CategoryTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([]);
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
-        $category = new Category(db: $dbMock, user: $userMock, categoryName: 'new_category_test');
+        $category = new Category(db: $dbMock, userId: 1, categoryName: 'new_category_test');
         $this->expectException(NoSuchCategoryException::class);
         $category->delete();
     }
@@ -79,11 +69,8 @@ final class CategoryTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([]);
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
-        $category = new Category(db: $dbMock, user: $userMock, categoryName: 'new_category_test');
+        $category = new Category(db: $dbMock, userId: 1, categoryName: 'new_category_test');
         $this->expectException(NoSuchCategoryException::class);
         $category->addAlias(alias: 'alias');
     }
@@ -93,11 +80,8 @@ final class CategoryTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([]);
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
-        $category = new Category(db: $dbMock, user: $userMock, categoryName: 'new_category_test');
+        $category = new Category(db: $dbMock, userId: 1, categoryName: 'new_category_test');
         $this->expectException(NoSuchCategoryException::class);
         $category->getAliases();
     }

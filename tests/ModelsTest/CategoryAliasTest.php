@@ -16,12 +16,9 @@ final class CategoryAliasTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 10],
+                    [['id' => 10]],
                     []
                 ));
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
         $categoryMock = $this->createMock(Category::class);
         $categoryMock->categoryId = 1;
@@ -38,9 +35,6 @@ final class CategoryAliasTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([]);
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
         $categoryMock = $this->createMock(Category::class);
         $categoryMock->categoryId = 1;
@@ -57,12 +51,9 @@ final class CategoryAliasTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1],
+                    [['id' => 1]],
                     []
                 ));
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
         $categoryMock = $this->createMock(Category::class);
         $categoryMock->categoryId = 1;
@@ -82,9 +73,6 @@ final class CategoryAliasTest extends TestCase
                     [],
                     []
                 ));
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
         $categoryMock = $this->createMock(Category::class);
         $categoryMock->categoryId = 1;
@@ -106,9 +94,6 @@ final class CategoryAliasTest extends TestCase
                         ['id'=> 1, 'name' => 'name']
                     ]
                 ));
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
         $categoryMock = $this->createMock(Category::class);
         $categoryMock->categoryId = 1;
@@ -128,9 +113,6 @@ final class CategoryAliasTest extends TestCase
                     [],
                     []
                 ));
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
 
         $categoryMock = $this->createMock(Category::class);
         $categoryMock->categoryId = 1;

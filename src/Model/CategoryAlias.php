@@ -4,6 +4,7 @@ namespace App\Model;
 
 use App\Database\Database;
 use App\Exception\NoCategoryAliasesFoundException;
+use App\Messages\ErrorMessage;
 use App\Model\Checks\CategoryAliasCheck;
 
 class CategoryAlias
@@ -60,7 +61,7 @@ class CategoryAlias
         );
 
         if (empty($aliases)) {
-            throw new NoCategoryAliasesFoundException('Для выбранной категории нет алиасов.');
+            throw new NoCategoryAliasesFoundException(ErrorMessage::NoAliasesFound->value);
         }
 
         return $aliases;

@@ -11,13 +11,9 @@ use App\Exception\NoExpenseFoundException;
 use App\Exception\NoSuchCategoryAliasException;
 use App\Exception\NoSuchCategoryException;
 use App\Messages\SuccessMessage;
-use App\Model\Category;
-use App\Model\User;
 use App\Services\CommandService;
 use App\Services\Validator\Date\DateValidator;
 use App\Services\Validator\Date\MonthAndYearValidator;
-
-use function PHPUnit\Framework\onConsecutiveCalls;
 
 final class CommandServiceTest extends TestCase
 {
@@ -29,13 +25,9 @@ final class CommandServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::Start;
 
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: []);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: []);
         $result = $commandService->handle();
 
         $commands = Command::cases();
@@ -49,12 +41,27 @@ final class CommandServiceTest extends TestCase
         $output = array_merge(
             $output,
             [
-                'Для того, чтобы добавить трату вводите в формате: {сумма траты (например, 14.1)} {название или алиас раздела} {примечание}.',
-                'Пример: 14.5 продукты ничего тольком не купил',
-                'Для того, чтобы добавить категорию расходов, введите данные в формате: /add_category {CategoryName}.',
-                'Пример: /add_category Бензин',
-                'Для того, чтобы добавить алиас для категории расходов, введите данные в формате: /add_category_alias {CategoryName} {Alias}.',
-                'Пример: /add_category_alias Бензин бенз (важно, что слово, стоящее сразу после команды /add_category_alias, должно быть таким же по написанию, как вы добавляли через /add_category)'
+                'Для того, чтобы добавить трату вводите в формате: {сумма траты} {название или алиас раздела} {примечание}. Например: 14.1 кафе мак дак',
+                'Для того, чтобы добавить категорию расходов, введите данные в формате: /add_category {название категории}. Например: /add_category Бензин',
+                'Для того, чтобы добавить алиас для категории расходов, введите данные в формате: /add_category_alias {название категории} {алиас категории}. Например: /add_category_alias Бензин бенз',
+                'Для того, чтобы просмотреть траты за указанный месяц, введите команду в формате: /month_expenses {мм или мм.гг или мм.гггг}.',
+                'Несколько примеров:',
+                '/month_expenses (выведет траты за текущий месяц)',
+                '/month_expenses 8',
+                '/month_expenses 10.21',
+                '/month_expenses 10.2021',
+                'Для того, чтобы просмотреть траты за указанный день, введите команду в формате: /day_expenses {д или д.мм или д.мм.гг}',
+                'Несколько примеров:',
+                '/day_expenses (выведет траты за текущий день)',
+                '/day_expenses 3',
+                '/day_expenses 3.10',
+                '/day_expenses 3.10.21',
+                '/day_expenses 3.10.2021',
+                'Для удаления траты, нажмите на синий текст при выводе расходов, он будет в формате /delete_expense100',
+                'Для удаления категории, введите команду в формате /delete_category {название категории}. Например:',
+                '/delete_category Бензин',
+                'Для удаления алиаса категории, введите команду в формате /delete_category_alias {название категории} {название алиаса}. Например:',
+                '/delete_category_alias Бензин бенз'
             ]
         );
 
@@ -66,16 +73,14 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1],
+                    [['category_id' => 1]],
+                    [['category_name' => 'test']],
+                    [['id' => 1]],
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AddExpense;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: [1, 'category_name', 'note']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: [1, 'category_name', 'note']);
         $result = $commandService->handle();
         
         $this->assertEquals($result, SuccessMessage::ExpenseAdded->value);
@@ -86,16 +91,14 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1],
+                    [['category_id' => 1]],
+                    [['category_name' => 'test']],
+                    [['id' => 1]],
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AddExpense;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: [1, 'category_name']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: [1, 'category_name']);
         $result = $commandService->handle();
         
         $this->assertEquals($result, SuccessMessage::ExpenseAdded->value);
@@ -111,15 +114,11 @@ final class CommandServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::DayExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: []);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: []);
         $result = $commandService->handle();
 
-        $toCompare = [explode(' ', $currentDatetime)[1].' (/delete1) - 5р, test, this_is_a_note.', 'Итого: 5р.'];
+        $toCompare = [explode(' ', $currentDatetime)[1].' (/delete_expense1) - 5р, test, this_is_a_note.', 'Итого: 5р.'];
 
         $this->assertEquals($result, implode(PHP_EOL, $toCompare));
     }
@@ -134,15 +133,11 @@ final class CommandServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::DayExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: [date('d')]);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: [date('d')]);
         $result = $commandService->handle();
 
-        $toCompare = [explode(' ', $currentDatetime)[1].' (/delete1) - 5р, test, this_is_a_note.', 'Итого: 5р.'];
+        $toCompare = [explode(' ', $currentDatetime)[1].' (/delete_expense1) - 5р, test, this_is_a_note.', 'Итого: 5р.'];
 
         $this->assertEquals($result, implode(PHP_EOL, $toCompare));
     }
@@ -157,15 +152,11 @@ final class CommandServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::DayExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: [date('d.m')]);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: [date('d.m')]);
         $result = $commandService->handle();
 
-        $toCompare = [explode(' ', $currentDatetime)[1].' (/delete1) - 5р, test, this_is_a_note.', 'Итого: 5р.'];
+        $toCompare = [explode(' ', $currentDatetime)[1].' (/delete_expense1) - 5р, test, this_is_a_note.', 'Итого: 5р.'];
 
         $this->assertEquals($result, implode(PHP_EOL, $toCompare));
     }
@@ -180,15 +171,11 @@ final class CommandServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::DayExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: [date('d.m.Y')]);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: [date('d.m.Y')]);
         $result = $commandService->handle();
 
-        $toCompare = [explode(' ', $currentDatetime)[1].' (/delete1) - 5р, test, this_is_a_note.', 'Итого: 5р.'];
+        $toCompare = [explode(' ', $currentDatetime)[1].' (/delete_expense1) - 5р, test, this_is_a_note.', 'Итого: 5р.'];
 
         $this->assertEquals($result, implode(PHP_EOL, $toCompare));
     }
@@ -203,12 +190,8 @@ final class CommandServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::MonthExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: []);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: []);
         $result = $commandService->handle();
 
         $dateValidator = new MonthAndYearValidator(date: '', allowEmptyDate: true);
@@ -217,7 +200,7 @@ final class CommandServiceTest extends TestCase
         $daysPassedUntillNow = round((time() - strtotime($dateInfo['startDate'].' 00:00:00')) / 60 / 60 / 24);
         $avg = number_format(5 / $daysPassedUntillNow, 2);
 
-        $toCompare = [date('d.m.Y H:i:s', strtotime($currentDatetime)).' (/delete1) - 5р, test, this_is_a_note.', 'Итого: '.$avg.'р. в среднем за день.', 'Всего: 5р.'];
+        $toCompare = [date('d.m.Y H:i:s', strtotime($currentDatetime)).' (/delete_expense1) - 5р, test, this_is_a_note.', 'Итого: '.$avg.'р. в среднем за день.', 'Всего: 5р.'];
 
         $this->assertEquals($result, implode(PHP_EOL, $toCompare));
     }
@@ -232,12 +215,8 @@ final class CommandServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::MonthExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['4']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['4']);
         $result = $commandService->handle();
 
         $dateValidator = new MonthAndYearValidator(date: '4', allowEmptyDate: true);
@@ -246,7 +225,7 @@ final class CommandServiceTest extends TestCase
         $daysPassedUntillNow = round((time() - strtotime($dateInfo['startDate'].' 00:00:00')) / 60 / 60 / 24);
         $avg = number_format(5 / $daysPassedUntillNow, 2);
 
-        $toCompare = [date('d.m.Y H:i:s', strtotime($currentDatetime)).' (/delete1) - 5р, test, this_is_a_note.', 'Итого: '.$avg.'р. в среднем за день.', 'Всего: 5р.'];
+        $toCompare = [date('d.m.Y H:i:s', strtotime($currentDatetime)).' (/delete_expense1) - 5р, test, this_is_a_note.', 'Итого: '.$avg.'р. в среднем за день.', 'Всего: 5р.'];
 
         $this->assertEquals($result, implode(PHP_EOL, $toCompare));
     }
@@ -261,12 +240,8 @@ final class CommandServiceTest extends TestCase
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::MonthExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['4.21']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['4.21']);
         $result = $commandService->handle();
 
         $dateValidator = new MonthAndYearValidator(date: '4.21', allowEmptyDate: true);
@@ -275,7 +250,7 @@ final class CommandServiceTest extends TestCase
         $daysPassedUntillNow = round((time() - strtotime($dateInfo['startDate'].' 00:00:00')) / 60 / 60 / 24);
         $avg = number_format(5 / $daysPassedUntillNow, 2);
 
-        $toCompare = [date('d.m.Y H:i:s', strtotime($currentDatetime)).' (/delete1) - 5р, test, this_is_a_note.', 'Итого: '.$avg.'р. в среднем за день.', 'Всего: 5р.'];
+        $toCompare = [date('d.m.Y H:i:s', strtotime($currentDatetime)).' (/delete_expense1) - 5р, test, this_is_a_note.', 'Итого: '.$avg.'р. в среднем за день.', 'Всего: 5р.'];
 
         $this->assertEquals($result, implode(PHP_EOL, $toCompare));
     }
@@ -286,16 +261,12 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1, 'created_at' => $currentDatetime, 'amount' => 5, 'category_name' => 'test', 'note' => 'this_is_a_note'],
+                    [['id' => 1, 'created_at' => $currentDatetime, 'amount' => 5, 'category_name' => 'test', 'note' => 'this_is_a_note']],
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::DeleteExpense;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['5']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['5']);
         $result = $commandService->handle();
 
         $this->assertEquals($result, SuccessMessage::ExpenseDeleted->value);
@@ -307,12 +278,8 @@ final class CommandServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::DeleteExpense;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['5']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['5']);
         $this->expectException(NoExpenseFoundException::class);
         $commandService->handle();
     }
@@ -329,15 +296,11 @@ final class CommandServiceTest extends TestCase
                     ]
                 );
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AllAliases;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['5']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['5']);
         $result = $commandService->handle();
 
-        $output = ['Список алиасов для категории test1:', ' - alias1', ' - alias2', 'Список алиасов для категории test2:', ' - alias3'];
+        $output = ['Список алиасов для категорий:', 'test1:', ' - alias1', ' - alias2', 'test2:', ' - alias3'];
         $this->assertEquals($result, implode(PHP_EOL, $output));
     }
 
@@ -347,12 +310,8 @@ final class CommandServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AllAliases;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['5']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['5']);
         $this->expectException(NoCategoriesFoundException::class);
         $commandService->handle();
     }
@@ -362,24 +321,20 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    [
+                    [[
                         'id' => 1
-                    ],
-                    [
+                    ]],
+                    [[
                         'id' => 1
-                    ],
+                    ]],
                     [
                         ['id' => 1, 'category_name' => 'test1', 'user_id' => 1, 'alias' => 'alias1'],
                         ['id' => 2, 'category_name' => 'test1', 'user_id' => 1, 'alias' => 'alias2']
                     ]
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::SpecificAliases;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['test1']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['test1']);
         $result = $commandService->handle();
 
         $output = ['Список алиасов для категории test1:', ' - alias1', ' - alias2'];
@@ -392,12 +347,8 @@ final class CommandServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::SpecificAliases;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['unused']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['unused']);
         $this->expectException(NoSuchCategoryException::class);
         $commandService->handle();
     }
@@ -407,19 +358,15 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    [
+                    [[
                         'id' => 1
-                    ],
+                    ]],
                     [],
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::SpecificAliases;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['unused']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['unused']);
         $this->expectException(NoCategoryAliasesFoundException::class);
         $commandService->handle();
     }
@@ -429,17 +376,13 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    [
+                    [[
                         'id' => 1
-                    ]
+                    ]]
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AddCategory;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category']);
         $this->expectException(CategoryAlreadyExistException::class);
         $commandService->handle();
     }
@@ -451,16 +394,13 @@ final class CommandServiceTest extends TestCase
                 ->will($this->onConsecutiveCalls(
                     [],
                     [],
-                    ['id' => 1],
+                    [['id' => 1]],
+                    [],
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AddCategory;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category']);
         $result = $commandService->handle();
         $this->assertEquals($result, SuccessMessage::CategoryAdded->value);
     }
@@ -471,12 +411,8 @@ final class CommandServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AddCategoryAlias;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category', 'new_alias']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category', 'new_alias']);
         $this->expectException(NoSuchCategoryException::class);
         $commandService->handle();
     }
@@ -486,17 +422,13 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1],
+                    [['id' => 1]],
                     [],
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AddCategoryAlias;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category', 'new_alias']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category', 'new_alias']);
         $result = $commandService->handle();
         $this->assertEquals($result, SuccessMessage::CategoryAliasAdded->value);
     }
@@ -506,16 +438,12 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1],
-                    ['id' => 1]
+                    [['id' => 1]],
+                    [['id' => 1]]
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::AddCategoryAlias;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category', 'new_alias']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category', 'new_alias']);
         $this->expectException(CategoryAliasAlreadyExistException::class);
         $commandService->handle();
     }
@@ -525,17 +453,13 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1],
+                    [['id' => 1]],
                     [],
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::DeleteCategory;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category']);
         $result = $commandService->handle();
         $this->assertEquals($result, SuccessMessage::CategoryDeleted->value);
     }
@@ -546,12 +470,8 @@ final class CommandServiceTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::DeleteCategory;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category']);
         $this->expectException(NoSuchCategoryException::class);
         $commandService->handle();
     }
@@ -561,13 +481,9 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::DeleteCategoryAlias;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category', 'alias']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category', 'alias']);
         $this->expectException(NoSuchCategoryException::class);
         $commandService->handle();
     }
@@ -577,16 +493,12 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1],
+                    [['id' => 1]],
                     []
                 ));
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-                    
         $command = Command::DeleteCategoryAlias;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category', 'alias']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category', 'alias']);
         $this->expectException(NoSuchCategoryAliasException::class);
         $commandService->handle();
     }
@@ -596,17 +508,13 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->will($this->onConsecutiveCalls(
-                    ['id' => 1],
-                    ['id' => 2],
+                    [['id' => 1]],
+                    [['id' => 2]],
                     []
                 ));
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::DeleteCategoryAlias;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['new_category', 'alias']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['new_category', 'alias']);
         $result = $commandService->handle();
         $this->assertEquals($result, SuccessMessage::CategoryAliasDeleted->value);
     }
@@ -618,13 +526,9 @@ final class CommandServiceTest extends TestCase
                 ->will($this->onConsecutiveCalls(
                     []
                 ));
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::MonthExpensesByCategory;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: []);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: []);
         $this->expectException(NoExpenseFoundException::class);
         $commandService->handle();
     }
@@ -641,13 +545,9 @@ final class CommandServiceTest extends TestCase
                         ['id' => 4, 'category_name' => 'category2', 'amount' => 12]
                     ]
                 ));
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::MonthExpensesByCategory;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: []);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: []);
         $result = $commandService->handle();
 
         $output = ['category1: 7р.', 'category2: 14р.', 'Итого: 21р.'];
@@ -666,13 +566,9 @@ final class CommandServiceTest extends TestCase
                         ['id' => 4, 'category_name' => 'category2', 'amount' => 12]
                     ]
                 ));
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::MonthExpensesByCategory;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['07']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['07']);
         $result = $commandService->handle();
 
         $output = ['category1: 7р.', 'category2: 14р.', 'Итого: 21р.'];
@@ -691,13 +587,9 @@ final class CommandServiceTest extends TestCase
                         ['id' => 4, 'category_name' => 'category2', 'amount' => 12]
                     ]
                 ));
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::MonthExpensesByCategory;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['07.22']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['07.22']);
         $result = $commandService->handle();
 
         $output = ['category1: 7р.', 'category2: 14р.', 'Итого: 21р.'];
@@ -709,13 +601,9 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::AverageEachMonthExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: []);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: []);
         $this->expectException(NoExpenseFoundException::class);
         $commandService->handle();
     }
@@ -732,13 +620,9 @@ final class CommandServiceTest extends TestCase
                         ['id' => 1, 'month' => '07', 'year' => '2021', 'category_name' => 'category1', 'sum' => 5.5]
                     ]
                 ));
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::AverageEachMonthExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['07.22']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['07.22']);
         $result = $commandService->handle();
 
         $output = ['category3: 12р. | 0р. | 0р. | 0р.', 'category2: 0р. | 2р. | 0р. | 0р.', 'category1: 0р. | 0р. | 1.5р. | 5.5р.'];
@@ -751,13 +635,9 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::TotalMonthExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: []);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: []);
         $this->expectException(NoExpenseFoundException::class);
         $commandService->handle();
     }
@@ -773,13 +653,9 @@ final class CommandServiceTest extends TestCase
                         ['id' => 2, 'month' => '07', 'year' => '2021', 'category_name' => 'category1', 'sum' => 7]
                     ]
                 ));
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::TotalMonthExpenses;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: ['07.22']);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: ['07.22']);
         $result = $commandService->handle();
 
         $output = ['10.2021 - 12р.', '09.2021 - 2р.', '07.2021 - 7р.'];
@@ -792,13 +668,9 @@ final class CommandServiceTest extends TestCase
         $dbMock = $this->createMock(SqlDatabase::class);
         $dbMock->method('execute')
                 ->willReturn([]);
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::ExpensesFromDatetime;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: [date('d.m.Y', strtotime('-1 day'))]);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: [date('d.m.Y', strtotime('-1 day'))]);
         $this->expectException(NoExpenseFoundException::class);
         $commandService->handle();
     }
@@ -814,13 +686,9 @@ final class CommandServiceTest extends TestCase
                         ['id' => 2, 'month' => '07', 'year' => '2021', 'category_name' => 'category1', 'sum' => 7]
                     ]
                 ));
-
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
                     
         $command = Command::ExpensesFromDatetime;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: []);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: []);
         $this->expectException(InvalidInputException::class);
         $commandService->handle();
     }
@@ -836,12 +704,8 @@ final class CommandServiceTest extends TestCase
                     ],
                 );
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
         $command = Command::ExpensesFromDatetime;
-        $commandService = new CommandService(db: $dbMock, user: $userMock, command: $command, arguments: [date('d.m.Y', strtotime('-3 day'))]);
+        $commandService = new CommandService(db: $dbMock, userId: 1, command: $command, arguments: [date('d.m.Y', strtotime('-3 day'))]);
         $result = $commandService->handle();
 
         $dateValidator = new DateValidator(date: date('d.m.Y', strtotime('-3 day')), allowEmptyDate: true);
@@ -850,7 +714,7 @@ final class CommandServiceTest extends TestCase
         $daysPassedUntillNow = round((time() - strtotime($dateInfo['startDate'].' 00:00:00')) / 60 / 60 / 24);
         $avg = number_format(5 / $daysPassedUntillNow, 2);
 
-        $toCompare = [date('d.m.Y H:i:s', strtotime($currentDatetime)).' (/delete4) - 5р, test, this_is_a_note.', 'Итого: '.$avg.'р. в среднем за день.', 'Итого: 5р.'];
+        $toCompare = [date('d.m.Y H:i:s', strtotime($currentDatetime)).' (/delete_expense4) - 5р, test, this_is_a_note.', 'Итого: '.$avg.'р. в среднем за день.', 'Итого: 5р.'];
 
         $this->assertEquals($result, implode(PHP_EOL, $toCompare));
     }

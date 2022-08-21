@@ -9,7 +9,7 @@ class CategoryAliases
 {
     public function __construct(
         private readonly Database $db,
-        private readonly User $user
+        private readonly int $userId
     ) {}
 
     public function getAllALiases(): array
@@ -28,7 +28,7 @@ class CategoryAliases
                 categories.id = category_aliases.category_id 
             WHERE 
                 categories.user_id = ?", 
-            [$this->user->getDatabaseUserId()]
+            [$this->userId]
         );
 
         if (empty($aliases)) {

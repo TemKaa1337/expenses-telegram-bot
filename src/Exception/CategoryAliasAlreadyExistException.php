@@ -1,11 +1,5 @@
-<?php
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace App\Exception;
 
-class CategoryAliasAlreadyExistException extends \Exception 
-{
-
-}
-
-?>
+class CategoryAliasAlreadyExistException extends \Exception {}

@@ -14,11 +14,7 @@ final class ExpenseTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn([]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expense = new Expense(db: $dbMock, user: $userMock, expenseId: 1);
+        $expense = new Expense(db: $dbMock, userId: 1, expenseId: 1);
         $this->expectException(NoExpenseFoundException::class);
         $expense->delete();
     }
@@ -29,11 +25,7 @@ final class ExpenseTest extends TestCase
         $dbMock->method('execute')
                 ->willReturn(['id' => 1]);
 
-        $userMock = $this->createMock(User::class);
-        $userMock->method('getDatabaseUserId')
-                    ->willReturn(1);
-
-        $expense = new Expense(db: $dbMock, user: $userMock, expenseId: 1);
+        $expense = new Expense(db: $dbMock, userId: 1, expenseId: 1);
         $empty = $expense->delete();
         $this->assertEmpty($empty);
     }

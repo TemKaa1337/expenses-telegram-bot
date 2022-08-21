@@ -2,18 +2,20 @@
 
 namespace App\Services;
 
-use App\Database\Database;
 use App\Exception\NoExpenseFoundException;
-use App\Model\Category;
-use App\Model\User;
-use App\Model\Expense;
 use App\Messages\ErrorMessage;
+use App\Database\Database;
+use App\Model\{
+    Category,
+    Expense,
+    User
+};
 
 class ExpenseService
 {
     public function __construct(
         private readonly Database $db,
-        private readonly User $user
+        private readonly int $userId
     ) {}
 
     public function addExpense(
@@ -27,12 +29,12 @@ class ExpenseService
             INSERT INTO 
                 expenses (created_at, amount, user_id, category_id, note) 
             VALUES (?, ?, ?, ?, ?)
-        ", [date('Y-m-d H:i:s'), $amount, $this->user->getDatabaseUserId(), $category->getCategoryId(), $note]);
+        ", [date('Y-m-d H:i:s'), $amount, $this->userId, $category->getCategoryId(), $note]);
     }
 
     public function delete(int $expenseId): void
     {
-        $expense = new Expense(db: $this->db, user: $this->user, expenseId: $expenseId);
+        $expense = new Expense(db: $this->db, userId: $this->userId, expenseId: $expenseId);
         $expense->delete();
     }
 
@@ -68,7 +70,7 @@ class ExpenseService
                 ORDER BY 
                     expenses.id asc
             ", 
-            [$this->user->getDatabaseUserId(), $dateFrom, $dateTo]
+            [$this->userId, $dateFrom, $dateTo]
         );
 
         if (empty($expenses)) {
@@ -109,7 +111,7 @@ class ExpenseService
                 ORDER BY 
                     expenses.id asc
             ", 
-            [$this->user->getDatabaseUserId(), $datetimeFrom, $datetimeTo]
+            [$this->userId, $datetimeFrom, $datetimeTo]
         );
         
         if (empty($expenses)) {
@@ -147,7 +149,7 @@ class ExpenseService
                 ORDER BY 
                     expenses.id asc
             ",
-            [$this->user->getDatabaseUserId(), $datetimeFrom, $datetimeTo]
+            [$this->userId, $datetimeFrom, $datetimeTo]
         );
 
         if (empty($expenses)) {
@@ -184,7 +186,7 @@ class ExpenseService
                     year desc,
                     month desc
             ",
-            [$this->user->getDatabaseUserId()]
+            [$this->userId]
         );
 
         if (empty($expenses)) {
@@ -221,7 +223,7 @@ class ExpenseService
                     year desc, 
                     month desc;
             ",
-            [$this->user->getDatabaseUserId()]
+            [$this->userId]
         );
 
         if (empty($expenses)) {
@@ -260,7 +262,7 @@ class ExpenseService
                 ORDER BY 
                     expenses.id asc
             ",
-            [$this->user->getDatabaseUserId(), $datetimeFrom]
+            [$this->userId, $datetimeFrom]
         );
 
         if (empty($expenses)) {
