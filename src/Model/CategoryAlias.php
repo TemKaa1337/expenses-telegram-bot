@@ -44,7 +44,7 @@ class CategoryAlias
         }
     }
 
-    public function checkIfUserHasCategoryAlias(Database $db, string $alias, int $userId): void
+    public static function checkIfUserHasCategoryAlias(Database $db, string $alias, int $userId): void
     {
         $aliasInfo = $db->execute('SELECT category_id FROM category_aliases WHERE alias = ?', [$alias]);
         if (empty($aliasInfo)) {
