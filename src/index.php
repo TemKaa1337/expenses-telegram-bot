@@ -2,7 +2,7 @@
 
 namespace App;
 
-include('vendor/autoload.php');
+include('../vendor/autoload.php');
 
 use App\Database\SqlDatabase;
 use App\Exception\InvalidBotActionException;
