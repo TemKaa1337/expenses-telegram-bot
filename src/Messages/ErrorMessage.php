@@ -12,4 +12,5 @@ enum ErrorMessage: string
     case UnknownBotAction = 'Произошла ошибка. Бот умеет отвечать только на текстовые команды.';
     case UnknownCategory = 'Такой категории не существует.';
     case CategoryAlreadyExist = 'Такая категория уже существует.';
+    case UpdateNotAllowed = 'Редактирование сообщения не поддерживается.';
 }

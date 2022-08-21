@@ -32,6 +32,8 @@ class App
         $db = new SqlDatabase();
         $logger = new Logger(db: $db);
 
+        $logger->info(chatId: 123, type: 'request', message: $contents);
+
         $isUpdate = !isset($contents['message']);
         $chatId = $isUpdate
                     ? $contents['chat']['id']
@@ -39,7 +41,7 @@ class App
 
         try {
             if ($isUpdate) {
-                throw new UpdateNotAllowedException('Редактирование сообщения не поддерживается.');
+                throw new UpdateNotAllowedException(ErrorMessage::UpdateNotAllowed->value);
             }
 
             $logger->info(chatId: $chatId, type: 'request', message: $contents);
