@@ -1,0 +1,9 @@
+Category:
+- add
+- delete
+- list of categories
+
+CategoryAlias:
+- add
+- delete
+- list of aliases

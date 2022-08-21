@@ -14,7 +14,8 @@ class CategoryAlias
     public function __construct(
         private readonly Database $db,
         private readonly Category $category,
-        private readonly null|string $alias = null
+        private readonly null|string $alias = null,
+        private readonly int|null $userId = null
     ) 
     { 
         $this->setCategoryAliasInfo();
@@ -40,6 +41,19 @@ class CategoryAlias
     {
         if (isset($this->aliasId)) {
             throw new CategoryAliasAlreadyExistException('Такой алиас категории уже существует');
+        }
+    }
+
+    public function checkIfUserHasCategoryAlias(int $userId): void
+    {
+        $aliasInfo = $this->db->execute('SELECT category_id FROM category_aliases WHERE alias = ?', [$this->alias]);
+        if (empty($aliasInfo)) {
+            throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
+        }
+
+        $categoryInfo = $this->db->execute('SELECT id FROM categories WHERE id = ? and user_id = ?', [$aliasInfo['category_id'], $userId]);
+        if (empty($categoryInfo)) {
+            throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
         }
     }
 
