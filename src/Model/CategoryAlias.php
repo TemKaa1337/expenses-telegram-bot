@@ -44,14 +44,14 @@ class CategoryAlias
         }
     }
 
-    public function checkIfUserHasCategoryAlias(int $userId): void
+    public function checkIfUserHasCategoryAlias(Database $db, string $alias, int $userId): void
     {
-        $aliasInfo = $this->db->execute('SELECT category_id FROM category_aliases WHERE alias = ?', [$this->alias]);
+        $aliasInfo = $db->execute('SELECT category_id FROM category_aliases WHERE alias = ?', [$alias]);
         if (empty($aliasInfo)) {
             throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
         }
 
-        $categoryInfo = $this->db->execute('SELECT id FROM categories WHERE id = ? and user_id = ?', [$aliasInfo['category_id'], $userId]);
+        $categoryInfo = $db->execute('SELECT id FROM categories WHERE id = ? and user_id = ?', [$aliasInfo['category_id'], $userId]);
         if (empty($categoryInfo)) {
             throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
         }

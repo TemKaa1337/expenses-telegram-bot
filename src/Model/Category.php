@@ -53,8 +53,7 @@ class Category
         try {
             $this->checkIfCategoryExists();
         } catch (NoSuchCategoryException $e) {
-            $alias = new CategoryAlias(db: $this->db, category: $this, alias: $this->categoryName);
-            $alias->checkIfUserHasCategoryAlias(userId: $this->user->getDatabaseUserId());
+            CategoryAlias::checkIfUserHasCategoryAlias(db: $this->db, alias: $this->categoryName, userId: $this->user->getDatabaseUserId());
         }
     }
 
