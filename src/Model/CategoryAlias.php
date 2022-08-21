@@ -23,8 +23,8 @@ class CategoryAlias
     private function setCategoryAliasInfo(): void
     {
         $categoryAliasInfo = $this->db->execute('SELECT id FROM category_aliases WHERE category_id = ? and alias = ?', [$this->category->getCategoryId(), $this->alias]);
-        if (isset($categoryAliasInfo['id'])) {
-            $this->aliasId = $categoryAliasInfo['id'];
+        if (!empty($categoryAliasInfo)) {
+            $this->aliasId = $categoryAliasInfo[0]['id'];
         }
     }
 

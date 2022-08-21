@@ -24,8 +24,8 @@ class Category
     private function setCategoryInfo(): void
     {
         $categoryInfo = $this->db->execute('SELECT id, user_id FROM categories WHERE category_name = ? and user_id = ?', [$this->categoryName, $this->user->getDatabaseUserId()]);
-        if (isset($categoryInfo['id'])) {
-            $this->categoryId = $categoryInfo['id'];
+        if (!empty($categoryInfo)) {
+            $this->categoryId = $categoryInfo[0]['id'];
         }
     }
 
