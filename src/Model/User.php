@@ -21,7 +21,7 @@ class User
     private function setUserInfo(): void
     { 
         $userInfo = $this->db->execute('SELECT * FROM users WHERE telegram_user_id = ?', [$this->telegramUserId]);
-        $this->databaseUserId = $userInfo['id'];
+        $this->databaseUserId = $userInfo[0]['id'];
     }
 
     public function getDatabaseUserId(): int
