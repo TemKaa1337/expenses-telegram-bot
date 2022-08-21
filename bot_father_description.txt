@@ -1,0 +1,30 @@
+previous:
+
+month_expenses - Траты за месяц
+month_expenses_from_date - Траты месяц начиная с даты
+day_expenses - Траты за день
+previous_month_expenses - Траты за предыдущий месяц
+aliases - Список псевдонимов для категорий
+add_category - Добавить категорию
+add_category_alias - Добавить псевдоним категории
+month_expenses_by_category - Траты за месяц по категориям
+average_each_month_expenses - Траты по категориям
+total_month_expenses - Общая сумма трат за каждый месяц
+
+new:
+
+start - Список комманд и их описание
+add_expense - Добавить трату
+month_expenses - Список трат за месяц
+day_expenses - Траты за день
+delete_expense - Удалить трату
+aliases - Алиасы категорий
+specific_aliases - Алиасы указанной категории
+add_category - Добавить категорию
+add_category_alias - Добавить алиас категории
+delete_category - Удалить категорию
+delete_category_alias - Удалить алиас категории
+month_expenses_by_category - Траты за месяц по категориям
+average_each_month_expenses - Среднее арифметическое трат по категориям
+total_month_expenses - Сумма трат за каждый месяц
+expenses_from_datetime - Список трат с указанного дня
