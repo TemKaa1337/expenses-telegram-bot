@@ -24,28 +24,38 @@ class Category
     private function setCategoryInfo(): void
     {
         $categoryInfo = $this->db->execute(
-            // "
-            //     SELECT 
-            //         categories.id, user_id, alias 
-            //     FROM 
-            //         categories 
-            //     JOIN 
-            //         category_aliases 
-            //     ON 
-            //         categories.id = category_aliases.category_id 
-            //     WHERE 
-            //         alias = ? 
-            //         AND user_id = ?
-            // ", 
             "
-            SELECT 
-                id, user_id, category_name 
-            FROM 
-                categories 
-            WHERE 
-                category_name = ? 
-                AND user_id = ?
-        ", 
+                SELECT 
+                    id, user_id, category_name 
+                FROM 
+                    categories 
+                WHERE 
+                    category_name = ? 
+                    AND user_id = ?
+            ", 
+            [$this->categoryName, $this->user->getDatabaseUserId()]
+        );
+
+        if (!empty($categoryInfo)) {
+            $this->categoryId = $categoryInfo[0]['id'];
+            return;
+        }
+        
+        // if user entered category alias instead of category name
+        $categoryInfo = $this->db->execute(
+            "
+                SELECT 
+                    categories.id, user_id, alias 
+                FROM 
+                    categories 
+                JOIN 
+                    category_aliases 
+                ON 
+                    categories.id = category_aliases.category_id 
+                WHERE 
+                    alias = ? 
+                    AND user_id = ?
+            ", 
             [$this->categoryName, $this->user->getDatabaseUserId()]
         );
 
@@ -82,9 +92,6 @@ class Category
 
         $alias = new CategoryAlias(db: $this->db, category: $this, alias: $this->categoryName);
         $alias->add();
-        
-        // $query = 'INSERT INTO category_aliases(category_id, alias) VALUES (?, ?)';
-        // $this->db->execute($query, [$this->categoryId, $this->categoryName]);
     }
 
     public function delete(): void
