@@ -48,12 +48,12 @@ class Category
         }
     }
 
-    public function checkIfCategoryAliasExists(): void
+    public function checkIfCategoryAliasExists(): int
     {
         try {
             $this->checkIfCategoryExists();
         } catch (NoSuchCategoryException $e) {
-            CategoryAlias::checkIfUserHasCategoryAlias(db: $this->db, alias: $this->categoryName, userId: $this->user->getDatabaseUserId());
+            return CategoryAlias::checkIfUserHasCategoryAlias(db: $this->db, alias: $this->categoryName, userId: $this->user->getDatabaseUserId());
         }
     }
 
