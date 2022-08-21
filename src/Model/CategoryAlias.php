@@ -44,7 +44,7 @@ class CategoryAlias
         }
     }
 
-    public static function checkIfUserHasCategoryAlias(Database $db, string $alias, int $userId): void
+    public static function checkIfUserHasCategoryAlias(Database $db, string $alias, int $userId): int
     {
         $aliasInfo = $db->execute('SELECT category_id FROM category_aliases WHERE alias = ?', [$alias]);
         if (empty($aliasInfo)) {
@@ -55,6 +55,8 @@ class CategoryAlias
         if (empty($categoryInfo)) {
             throw new NoSuchCategoryAliasException('Такого алиаса категории не существует.');
         }
+
+        return $categoryInfo[0]['id'];
     }
 
     public function delete(): void
