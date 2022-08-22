@@ -1,0 +1,1 @@
+Just a bot that helps you track your expenses, try it out in telegram: @control_expenses_bot. Any descriptions you can get by typing /start command!
