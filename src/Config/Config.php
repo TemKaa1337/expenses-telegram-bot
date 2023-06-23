@@ -12,7 +12,7 @@ if (!function_exists('config')) {
      *         username: string,
      *         password: string
      *     },
-     *     bot: array<string, mixed>
+     *     bot: array{key: string}
      * }
      */
     function config(): array {
