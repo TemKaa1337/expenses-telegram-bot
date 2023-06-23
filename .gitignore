@@ -1,5 +1,4 @@
-/src/config/Secret/
-/cert/
-/src/vendor/
-/src/cert/
+/.idea
+/src/Config/bot.json
+/src/Config/database.json
 /vendor
